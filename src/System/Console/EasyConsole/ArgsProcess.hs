@@ -1,4 +1,4 @@
-module System.Console.EasyConsole.ArgsProcess (preprocess, Args, NiceArgs) where
+module System.Console.EasyConsole.ArgsProcess (preprocess, Arg, Args, NiceArgs) where
 
 
 import qualified Data.Map as M

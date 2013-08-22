@@ -3,4 +3,4 @@ module Main where
 
 
 main::IO()
-main = putStrLn "nothing"
+main = putStrLn "nothing new?"
