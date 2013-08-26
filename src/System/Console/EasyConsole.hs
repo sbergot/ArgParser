@@ -1,37 +1,34 @@
 module System.Console.EasyConsole where
 
 import System.Console.EasyConsole.ArgsProcess
+import Data.Maybe (isJust)
 
 
 type ParseResult a = Either String a
 data Optionality a = Mandatory | Optional a
-data ParamSpec a = 
-  NoArg   (Bool -> ParseResult a) | 
-  OneArg  (Arg  -> ParseResult a) (Optionality a) | 
-  ManyArg (Args -> ParseResult a) (Optionality a)
+data ParamOrd a =
+  OneArg  (Arg  -> ParseResult a) | 
+  ManyArg (Args -> ParseResult a) 
 
--- only valid for flags?
--- really ugly
--- submit question
-runParser :: ParamSpec a -> Maybe Args -> ParseResult a
+data ParamSpec a =
+  WithArgs (ParamOrd a) (Optionality a) |
+  FlagParam (Bool -> a)
 
-runParser (NoArg  parser  ) Nothing          = parser False
-runParser (NoArg  parser  ) (Just [])        = parser True 
-runParser (NoArg  _       ) (Just _ )        = Left "Unexpected argument"
+checkArg :: ParamSpec a -> Maybe Args -> ParseResult a
+checkArg (WithArgs _ (Optional def)) Nothing     = Right def
+checkArg (WithArgs _ Mandatory)      Nothing     = Left "missing mandatory argument"
+checkArg (WithArgs parser _)         (Just args) = runParser parser args
+checkArg (FlagParam parser)          args        = Right $ parser $ isJust args
 
-runParser (OneArg _ (Optional def)) Nothing  = Right def
-runParser (OneArg _ Mandatory) Nothing       = Left "missing mandatory argument"
-runParser (OneArg _ _) (Just [])             = Left "missing  argument"
-runParser (OneArg parser _) (Just [arg])     = parser arg
-runParser (OneArg _ _) (Just _)              = Left "too many arguments"
-
-runParser (ManyArg _ (Optional def)) Nothing = Right def
-runParser (ManyArg _ Mandatory) Nothing      = Left "missing mandatory argument"
-runParser (ManyArg _      _) (Just [])       = Left "missing arguments"
-runParser (ManyArg parser _) (Just args)     = parser args
+runParser :: ParamOrd a -> Args -> ParseResult a
+runParser _                []    = Left "missing  argument(s)"
+runParser (OneArg parser)  [arg] = parser arg
+runParser (OneArg _ )      _     = Left "too many arguments"
+runParser (ManyArg parser) args  = parser args
   
 
-data ArgSrc = Pos | Flag
+data ArgSrc = Pos | Flag 
+
 data ArgParserInfo = ArgParserInfo {
   argdescr :: String,
   argkey :: String,
@@ -44,7 +41,7 @@ data CmdLineAppInfo = CmdLineAppInfo {
   appdescr :: Maybe String
   }
   
-data Parser a = Parser (Args -> a)
+data Parser a = Parser (ParamSpec a) ArgParserInfo
 data CmdLineParser a = CmdLineParser {
   info :: CmdLineAppInfo,
   cmdlineparser :: Parser a
