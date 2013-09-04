@@ -13,7 +13,8 @@ executable EasyConsole
                    System.Console.EasyConsole,
                    System.Console.EasyConsole.ArgsProcess,
                    System.Console.EasyConsole.Params,
-                   System.Console.EasyConsole.BaseType
+                   System.Console.EasyConsole.BaseType,
+                   System.Console.EasyConsole.Parser
 
 library 
   build-depends:   
@@ -25,5 +26,6 @@ library
                    System.Console.EasyConsole,
                    System.Console.EasyConsole.ArgsProcess,
                    System.Console.EasyConsole.Params,
-                   System.Console.EasyConsole.BaseType
+                   System.Console.EasyConsole.BaseType,
+                   System.Console.EasyConsole.Parser
 

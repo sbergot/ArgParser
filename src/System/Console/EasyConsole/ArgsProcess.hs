@@ -3,6 +3,7 @@ module System.Console.EasyConsole.ArgsProcess (
   Arg,
   Args,
   NiceArgs,
+  ArgConsumer,
   takePos,
   takeAllPos,
   takeFlag
@@ -63,5 +64,3 @@ takeFlag :: String -> ArgConsumer
 takeFlag key fullargs@(args, flags) = case M.lookup key flags of
   Nothing       -> (Nothing, fullargs)
   Just flagargs -> (Just flagargs, (args, M.delete key flags))
-
-

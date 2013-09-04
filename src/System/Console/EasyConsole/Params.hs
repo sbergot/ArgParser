@@ -11,22 +11,16 @@ data ParamOrd a =
   OneArg  (Arg  -> ParseResult a) |
   ManyArg (Args -> ParseResult a)
 
-
 data ParamType a =
-  WithArgs (ParamOrd a) (Optionality a) ArgSrc |
+  WithArgs (ParamOrd a) (Optionality a) |
   FlagParam (Bool -> a)
 
-data ParamSpec a = ParamSpec {
-  paramkey    :: String,
-  paramsrc    :: ArgSrc,
-  paramparser :: ParamType a
-  }
 
 checkArg :: ParamType a -> Maybe Args -> ParseResult a
-checkArg (WithArgs _ (Optional def) _) Nothing     = Right def
-checkArg (WithArgs _ Mandatory _)      Nothing     = Left "missing mandatory argument"
-checkArg (WithArgs parser _ _)         (Just args) = runParser parser args
-checkArg (FlagParam parser)            args        = Right $ parser $ isJust args
+checkArg (WithArgs _ (Optional def)) Nothing     = Right def
+checkArg (WithArgs _ Mandatory)      Nothing     = Left "missing mandatory argument"
+checkArg (WithArgs parser _)         (Just args) = runParser parser args
+checkArg (FlagParam parser)          args        = Right $ parser $ isJust args
 
 runParser :: ParamOrd a -> Args -> ParseResult a
 runParser _                []    = Left "missing  argument(s)"
