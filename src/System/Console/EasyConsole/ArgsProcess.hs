@@ -1,13 +1,18 @@
-module System.Console.EasyConsole.ArgsProcess (preprocess, Arg, Args, NiceArgs) where
+module System.Console.EasyConsole.ArgsProcess (
+  preprocess,
+  Arg,
+  Args,
+  NiceArgs,
+  takePos,
+  takeAllPos,
+  takeFlag
+  ) where
 
 
+import           System.Console.EasyConsole.BaseType hiding (ArgSrc(..)) 
 import qualified Data.Map as M
 import Data.List
 
-type Arg = String
-type Args = [Arg]
-type Flags = M.Map Arg Args
-type NiceArgs = (Args, Flags)
 data Token = Flag Arg | Pos Arg
 
 isPos :: Token -> Bool
@@ -43,3 +48,20 @@ preprocess args = (pos, flagArgs)
   where
   (pos, rest) =  collectPos $ tokenize args
   flagArgs = M.fromList $ unfoldr parseFlag rest
+  
+
+type ArgConsumer = NiceArgs -> (Maybe Args, NiceArgs)  
+
+takePos :: ArgConsumer 
+takePos args@([], _) = (Nothing, args)
+takePos (x:xs, flags) = (Just [x], (xs, flags)) 
+
+takeAllPos :: ArgConsumer
+takeAllPos (args, flags) = (Just args, ([], flags)) 
+
+takeFlag :: String -> ArgConsumer
+takeFlag key fullargs@(args, flags) = case M.lookup key flags of
+  Nothing       -> (Nothing, fullargs)
+  Just flagargs -> (Just flagargs, (args, M.delete key flags))
+
+

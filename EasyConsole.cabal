@@ -11,7 +11,9 @@ executable EasyConsole
   ghc-options:     -Wall
   other-modules:   
                    System.Console.EasyConsole,
-                   System.Console.EasyConsole.ArgsProcess
+                   System.Console.EasyConsole.ArgsProcess,
+                   System.Console.EasyConsole.Params,
+                   System.Console.EasyConsole.BaseType
 
 library 
   build-depends:   
@@ -21,5 +23,7 @@ library
   ghc-options:     -Wall
   other-modules:   
                    System.Console.EasyConsole,
-                   System.Console.EasyConsole.ArgsProcess
+                   System.Console.EasyConsole.ArgsProcess,
+                   System.Console.EasyConsole.Params,
+                   System.Console.EasyConsole.BaseType
 
