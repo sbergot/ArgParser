@@ -1,29 +1,23 @@
 module System.Console.EasyConsole.Params where
 
-import           System.Console.EasyConsole.BaseType
-import           Data.Maybe                             (isJust)
+import System.Console.EasyConsole.Parser
+import qualified Data.Map as M
 
-type ParseResult a = Either String a
 
 data Optionality a = Mandatory | Optional a
 
-data ParamOrd a =
-  OneArg  (Arg  -> ParseResult a) |
-  ManyArg (Args -> ParseResult a)
+instance Functor Optionality where
+  fmap _ Mandatory = Mandatory
+  fmap f (Optional val) = Optional $ f val
 
-data ParamType a =
-  WithArgs (ParamOrd a) (Optionality a) |
-  FlagParam (Bool -> a)
+data FlagParam a = FlagParam String (Bool -> a)
 
-
-checkArg :: ParamType a -> Maybe Args -> ParseResult a
-checkArg (WithArgs _ (Optional def)) Nothing     = Right def
-checkArg (WithArgs _ Mandatory)      Nothing     = Left "missing mandatory argument"
-checkArg (WithArgs parser _)         (Just args) = runParser parser args
-checkArg (FlagParam parser)          args        = Right $ parser $ isJust args
-
-runParser :: ParamOrd a -> Args -> ParseResult a
-runParser _                []    = Left "missing  argument(s)"
-runParser (OneArg parser)  [arg] = parser arg
-runParser (OneArg _ )      _     = Left "too many arguments"
-runParser (ManyArg parser) args  = parser args
+instance ParamSpec FlagParam where
+  getparser (FlagParam key parse) = Parser rawparse where
+    rawparse (pos, flags) =
+      (Right $ parse $ M.member key flags,
+       (pos, M.delete key flags))
+  getcategory _ = "optional"
+  getargformat (FlagParam key _) = "-" ++ first ++ ", --" ++ key where
+    first = take 1 key
+    

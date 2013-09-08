@@ -1,25 +1,13 @@
 module System.Console.EasyConsole where
 
 import           System.Console.EasyConsole.BaseType
-import           System.Console.EasyConsole.Params
-
-data ArgParserInfo = ArgParserInfo {
-  argdescr :: String,
-  argkey   :: String,
-  argsrc   :: ArgSrc
-  }
 
 data CmdLineAppInfo = CmdLineAppInfo {
-  cmdargsdescr :: [ArgParserInfo],
+  cmdargsdescr :: [ParamDescr],
   appname      :: String,
   appdescr     :: Maybe String
   }
 
-data Parser a = Parser (ParamType a) ArgParserInfo
-data CmdLineParser a = CmdLineParser {
-  info          :: CmdLineAppInfo,
-  cmdlineparser :: Parser a
-  }
 
 maxkeywidth :: Int
 maxkeywidth = 60
@@ -30,6 +18,7 @@ keyindentwidth = 20
 keyindent :: String
 keyindent = replicate keyindentwidth ' '
 
+{--
 -- missing argsrc usage
 instance Show ArgParserInfo where
   show arginfo = keyindent ++ formattedkey ++ sep ++ descr
@@ -47,3 +36,4 @@ instance Show ArgParserInfo where
 simplePosArgParserInfo :: String -> ArgParserInfo
 simplePosArgParserInfo key = ArgParserInfo "" key Pos
 
+--}
