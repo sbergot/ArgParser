@@ -36,19 +36,27 @@ data SingleArgParam a = SingleArgParam ArgSrc String (Arg -> a)
 -- TODO manage optionality
 instance ParamSpec SingleArgParam where
   getparser (SingleArgParam src key parse) = Parser rawparse where
+
     rawparse = case src of
       Flag -> flagparse
       Pos -> posparse
-    flagparse (pos, flags) = (res, (pos, M.delete key flags)) where
+
+    logkey (Left err) = Left $ "fail to parse " ++ key ++ " : " ++ err
+    logkey val = val
+  
+    flagparse (pos, flags) = (logkey res, (pos, M.delete key flags)) where
       res = case M.lookup key flags of
         Nothing -> Left "missing flag"
         Just [] -> Left "missing arg"
         Just [val] -> Right $ parse val
-        Just _ -> Left "too many args" 
+        Just _ -> Left "too many args"
+ 
     posparse (pos, flags) = case pos of
-      [] -> (Left "missing arg", (pos, flags))
+      [] -> (logkey $ Left "missing arg", (pos, flags))
       val:rest -> (Right $ parse val, (rest, flags))
-  getcategory _ = "optional"
+
+  getcategory _ = "mandatory"
+
   getargformat (SingleArgParam src key _) = case src of
     Flag -> flagformat key ++ " VAL"
     Pos -> key ++ "VAL"
