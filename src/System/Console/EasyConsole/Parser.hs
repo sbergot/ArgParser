@@ -1,7 +1,7 @@
 module System.Console.EasyConsole.Parser where
 
-import System.Console.EasyConsole.BaseType
-import Control.Applicative
+import           Control.Applicative
+import           System.Console.EasyConsole.BaseType
 
 data Parser a = Parser (NiceArgs -> (ParseResult a, NiceArgs))
 
@@ -27,7 +27,7 @@ class ParamSpec spec where
 
 data ParserSpec a = ParserSpec {
   parserparams :: [ParamDescr],
-  parserfun :: Parser a
+  parserfun    :: Parser a
   }
 
 getParamDescr :: ParamSpec spec => spec a -> ParamDescr
@@ -43,7 +43,7 @@ liftParam param = ParserSpec
 
 more :: ParamSpec spec => ParserSpec (a -> b) -> spec a -> ParserSpec b
 more parser param = parser <*> liftParam param
-  
+
 instance Functor ParserSpec where
         fmap f p = p {parserfun = fmap f $ parserfun p}
 

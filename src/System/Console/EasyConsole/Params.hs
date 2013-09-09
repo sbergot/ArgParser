@@ -1,8 +1,8 @@
 module System.Console.EasyConsole.Params where
 
-import System.Console.EasyConsole.BaseType
-import System.Console.EasyConsole.Parser
-import qualified Data.Map as M
+import qualified Data.Map                            as M
+import           System.Console.EasyConsole.BaseType
+import           System.Console.EasyConsole.Parser
 
 data FlagParam a = FlagParam String (Bool -> a)
 
@@ -19,7 +19,7 @@ instance ParamSpec FlagParam where
   getargformat (FlagParam key _) = flagformat key
 
 data Descr spec a = Descr {
-  getvalue :: spec a,
+  getvalue     :: spec a,
   getuserdescr :: String
   }
 
@@ -43,14 +43,14 @@ instance ParamSpec SingleArgParam where
 
     logkey (Left err) = Left $ "fail to parse " ++ key ++ " : " ++ err
     logkey val = val
-  
+
     flagparse (pos, flags) = (logkey res, (pos, M.delete key flags)) where
       res = case M.lookup key flags of
         Nothing -> Left "missing flag"
         Just [] -> Left "missing arg"
         Just [val] -> Right $ parse val
         Just _ -> Left "too many args"
- 
+
     posparse (pos, flags) = case pos of
       [] -> (logkey $ Left "missing arg", (pos, flags))
       val:rest -> (Right $ parse val, (rest, flags))

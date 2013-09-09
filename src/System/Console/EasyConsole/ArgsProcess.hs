@@ -1,8 +1,8 @@
 module System.Console.EasyConsole.ArgsProcess (preprocess) where
 
-import           System.Console.EasyConsole.BaseType  
-import qualified Data.Map as M
-import Data.List
+import           Data.List
+import qualified Data.Map                            as M
+import           System.Console.EasyConsole.BaseType
 
 data Token = Flag Arg | Pos Arg
 
@@ -17,9 +17,9 @@ getWord (Flag word) = word
 tokenize :: Args -> [Token]
 tokenize = concatMap arg2token where
   arg2token :: Arg -> [Token]
-  arg2token ('-':'-':word) = [Flag word] 
-  arg2token ('-':word) =  map (Flag . (:[]) ) word 
-  arg2token word = [Pos word] 
+  arg2token ('-':'-':word) = [Flag word]
+  arg2token ('-':word) =  map (Flag . (:[]) ) word
+  arg2token word = [Pos word]
 
 collectPos :: [Token] -> (Args, [Token])
 collectPos tokens = (pos, rest) where

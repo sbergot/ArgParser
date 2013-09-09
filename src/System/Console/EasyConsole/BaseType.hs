@@ -10,6 +10,6 @@ type ParseResult a = Either String a
 
 data ParamDescr = ParamDescr {
   argCategory :: String,
-  argFormat :: String,
-  argDescr :: String
+  argFormat   :: String,
+  argDescr    :: String
   }
