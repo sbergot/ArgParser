@@ -30,33 +30,64 @@ instance ParamSpec spec => ParamSpec (Descr spec) where
   getdescr = getuserdescr
 
 data ArgSrc = Flag | Pos
+
+choosesrc :: a -> a -> ArgSrc -> a
+choosesrc flag pos src = case src of
+  Flag -> flag
+  Pos -> pos
+
+argformat :: ArgSrc -> String -> String
+argformat Pos key = key ++ "VAL"
+argformat Flag key = flagformat key ++ " VAL"
+
 data Optionality a = Mandatory | Optional a
-data SingleArgParam a = SingleArgParam ArgSrc String (Arg -> a)
 
--- TODO manage optionality
+missing :: Optionality a -> String -> ParseResult a
+missing Mandatory msg = Left msg
+missing (Optional val) _ = Right val
+
+category :: Optionality a -> String
+category Mandatory = "mandatory"
+category _         = "optional"
+
+logkey :: String -> ParseResult a -> ParseResult a
+logkey key (Left err) = Left $ "fail to parse " ++ key ++ " : " ++ err
+logkey _   val = val
+
+data SingleArgParam a = SingleArgParam (Optionality a) ArgSrc String (Arg -> a)
+
 instance ParamSpec SingleArgParam where
-  getparser (SingleArgParam src key parse) = Parser rawparse where
+  getparser (SingleArgParam opt src key parse) = Parser rawparse where
+    rawparse = choosesrc flagparse posparse src
+    defaultOrError = missing opt
 
-    rawparse = case src of
-      Flag -> flagparse
-      Pos -> posparse
-
-    logkey (Left err) = Left $ "fail to parse " ++ key ++ " : " ++ err
-    logkey val = val
-
-    flagparse (pos, flags) = (logkey res, (pos, M.delete key flags)) where
+    flagparse (pos, flags) = (logkey key res, (pos, M.delete key flags)) where
       res = case M.lookup key flags of
-        Nothing -> Left "missing flag"
+        Nothing -> defaultOrError "missing flag"
         Just [] -> Left "missing arg"
         Just [val] -> Right $ parse val
         Just _ -> Left "too many args"
 
     posparse (pos, flags) = case pos of
-      [] -> (logkey $ Left "missing arg", (pos, flags))
+      [] -> (logkey key $ defaultOrError "missing arg", (pos, flags))
       val:rest -> (Right $ parse val, (rest, flags))
 
-  getcategory _ = "mandatory"
+  getcategory (SingleArgParam opt _ _ _) = category opt
+  getargformat (SingleArgParam _ src key _) = argformat src key
 
-  getargformat (SingleArgParam src key _) = case src of
-    Flag -> flagformat key ++ " VAL"
-    Pos -> key ++ "VAL"
+data MultipleArgParam a = MultipleArgParam (Optionality a) ArgSrc String (Args -> a)
+
+instance ParamSpec MultipleArgParam where
+  getparser (MultipleArgParam opt src key parse) = Parser rawparse where
+    rawparse = choosesrc flagparse posparse src
+    defaultOrError = missing opt
+
+    flagparse (pos, flags) = (logkey key res, (pos, M.delete key flags)) where
+      res = case M.lookup key flags of
+        Nothing -> defaultOrError "missing flag"
+        Just vals -> Right $ parse vals
+
+    posparse (pos, flags) = (Right $ parse pos, ([], flags))
+
+  getcategory (MultipleArgParam opt _ _ _) = category opt
+  getargformat (MultipleArgParam _ src key _) = argformat src key
