@@ -1,39 +1,31 @@
 module System.Console.EasyConsole where
 
 import           System.Console.EasyConsole.BaseType
+import           System.Console.EasyConsole.Params
+import           System.Console.EasyConsole.Parser
 
-data CmdLineAppInfo = CmdLineAppInfo {
-  cmdargsdescr :: [ParamDescr],
+data CmdLineApp a = CmdLineApp {
+  cmdargparser :: ParserSpec a,
   appname      :: String,
   appdescr     :: Maybe String
   }
 
+data CmdLineFormat = CmdLineFormat {
+  maxkeywidth    :: Int,
+  keyindentwidth :: Int
+  }
 
-maxkeywidth :: Int
-maxkeywidth = 60
+defaultFormat :: CmdLineFormat
+defaultFormat = CmdLineFormat 60 20
 
-keyindentwidth :: Int
-keyindentwidth = 20
-
-keyindent :: String
-keyindent = replicate keyindentwidth ' '
-
-{--
--- missing argsrc usage
-instance Show ArgParserInfo where
-  show arginfo = keyindent ++ formattedkey ++ sep ++ descr
-    where
-      key = argkey arginfo
-      formattedkey = case argsrc arginfo of
-        Pos -> key
-        Flag -> "-" ++ [head key] ++ ", --" ++ key
-      padding = maxkeywidth - length formattedkey
-      sep = if padding > 0
-        then replicate padding ' '
-        else "\n" ++ keyindent ++ replicate maxkeywidth ' '
-      descr = argdescr arginfo
-
-simplePosArgParserInfo :: String -> ArgParserInfo
-simplePosArgParserInfo key = ArgParserInfo "" key Pos
-
---}
+showargformat :: CmdLineFormat -> ParamDescr -> String
+showargformat fmt descr =
+  keyindent ++ formattedkey ++ sep ++ descrtext where
+    keyindent = replicate (keyindentwidth fmt) ' '
+    formattedkey = argFormat descr
+    _maxkeywidth = maxkeywidth fmt
+    padding = _maxkeywidth - length formattedkey
+    sep = if padding > 0
+      then replicate padding ' '
+      else "\n" ++ keyindent ++ replicate _maxkeywidth ' '
+    descrtext = argDescr descr
