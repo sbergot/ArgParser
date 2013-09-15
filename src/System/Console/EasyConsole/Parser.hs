@@ -1,7 +1,8 @@
 module System.Console.EasyConsole.Parser (
   ParamSpec (..),
   liftParam,
-  more
+  parsedby,
+  andby
   ) where
 
 import           Control.Applicative
@@ -25,5 +26,11 @@ liftParam param = ParserSpec
   [getParamDescr param]
   $ getparser param
 
-more :: ParamSpec spec => ParserSpec (a -> b) -> spec a -> ParserSpec b
-more parser param = parser <*> liftParam param
+infixl 0 `andby`
+andby :: ParamSpec spec =>
+  ParserSpec (a -> b) -> spec a -> ParserSpec b
+andby parser param = parser <*> liftParam param
+
+parsedby :: ParamSpec spec =>
+  (a -> b) -> spec a -> ParserSpec b
+parsedby constr firstarg = constr <$> liftParam firstarg

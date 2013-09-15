@@ -1,4 +1,6 @@
-module System.Console.EasyConsole.Run (runApp) where
+module System.Console.EasyConsole.Run (
+  runApp, mkApp
+  ) where
 
 import System.Console.EasyConsole.BaseType
 import System.Console.EasyConsole.ArgsProcess
@@ -16,5 +18,9 @@ runApp appspec appfun = do
     Left errmsg -> putStrLn errmsg
     Right val -> appfun val
   
+mkApp :: ParserSpec a -> IO (CmdLineApp a)
+mkApp spec = do
+  progname <- getProgName
+  return $ CmdLineApp spec progname Nothing Nothing
   
 
