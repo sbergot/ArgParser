@@ -26,7 +26,7 @@ liftParam param = ParserSpec
   [getParamDescr param]
   $ getparser param
 
-infixl 0 `andby`
+infixl 1 `andby`
 andby :: ParamSpec spec =>
   ParserSpec (a -> b) -> spec a -> ParserSpec b
 andby parser param = parser <*> liftParam param

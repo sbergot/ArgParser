@@ -10,8 +10,18 @@ module System.Console.EasyConsole.Params (
 ) where
 
 import qualified Data.Map                            as M
+import           Data.Maybe
 import           System.Console.EasyConsole.BaseType
 import           System.Console.EasyConsole.Parser
+
+takeFlag :: String -> Flags -> (Maybe Args, Flags)
+takeFlag key flags = (args, rest) where
+  args = case catMaybes [lookupflag key, lookupflag short] of
+    [] -> Nothing
+    grpargs -> Just $ concat grpargs
+  lookupflag _key = M.lookup _key flags
+  rest = M.delete key $ M.delete short flags
+  short = take 1 key
 
 data FlagParam a = FlagParam String (Bool -> a)
 
@@ -22,8 +32,9 @@ flagformat key = "-" ++ first ++ ", --" ++ key where
 instance ParamSpec FlagParam where
   getparser (FlagParam key parse) = Parser rawparse where
     rawparse (pos, flags) =
-      (Right $ parse $ M.member key flags,
-       (pos, M.delete key flags))
+      (Right $ parse found, (pos, rest)) where
+        (args, rest) = takeFlag key flags
+        found = isJust args
   getcategory _ = "optional"
   getargformat (FlagParam key _) = flagformat key
 
@@ -67,10 +78,10 @@ data StdArgParam argformat a =  StdArgParam (Optionality a) ArgSrc String (argfo
 instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
   getparser (StdArgParam opt src key parse) = Parser rawparse where
     rawparse = choosesrc flagparse posparse src
-    defaultOrError = missing opt
 
-    flagparse (pos, flags) = (logkey key res, (pos, M.delete key flags)) where
-      res = case M.lookup key flags of
+    flagparse (pos, flags) = (logkey key res, (pos, rest)) where
+      (margs, rest) = takeFlag key flags
+      res = case margs of
         Nothing -> defaultOrError "missing flag"
         Just args -> runflagparse parse args
 
@@ -78,6 +89,8 @@ instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
       [] -> (logkey key $ defaultOrError "missing arg", (pos, flags))
       args -> let (res, rest) = runposparse parse args
               in  (res, (rest, flags))
+
+    defaultOrError = missing opt
 
   getcategory (StdArgParam opt _ _ _) = category opt
   getargformat (StdArgParam _ src key parser) =
@@ -101,5 +114,5 @@ category Mandatory = "mandatory"
 category _         = "optional"
 
 logkey :: String -> ParseResult a -> ParseResult a
-logkey key (Left err) = Left $ "fail to parse " ++ key ++ " : " ++ err
+logkey key (Left err) = Left $ "fail to parse '" ++ key ++ "' : " ++ err
 logkey _   val = val
