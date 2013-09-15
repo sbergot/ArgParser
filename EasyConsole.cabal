@@ -1,33 +1,21 @@
 name:           EasyConsole
-version:        0.1
+version:        0.1.1
 cabal-version:  >=1.2
 build-type:     Simple
 author:         sberg
 
-executable EasyConsole
-  hs-source-dirs:  src
-  main-is:         Main.hs
-  build-depends:   base >= 4
-  ghc-options:     -Wall
-  other-modules:   
-                   System.Console.EasyConsole,
-                   System.Console.EasyConsole.ArgsProcess,
-                   System.Console.EasyConsole.Params,
-                   System.Console.EasyConsole.BaseType,
-                   System.Console.EasyConsole.Parser,
-                   System.Console.EasyConsole.Format
-
 library 
-  build-depends:   
+  build-depends:    
                    base >= 4,
                    containers
-  hs-source-dirs:  src
-  ghc-options:     -Wall
-  other-modules:   
-                   System.Console.EasyConsole,
+  hs-source-dirs:   src
+  ghc-options:      -Wall
+  other-modules:    
                    System.Console.EasyConsole.ArgsProcess,
-                   System.Console.EasyConsole.Params,
                    System.Console.EasyConsole.BaseType,
+                   System.Console.EasyConsole.Format,
+                   System.Console.EasyConsole.Params,
                    System.Console.EasyConsole.Parser,
-                   System.Console.EasyConsole.Format
+                   System.Console.EasyConsole.Run
+  exposed-modules:  System.Console.EasyConsole
 

@@ -15,6 +15,8 @@ data ParamDescr = ParamDescr {
   argDescr    :: String
   }
 
+data Parser a = Parser (NiceArgs -> (ParseResult a, NiceArgs))
+
 data ParserSpec a = ParserSpec {
   parserparams :: [ParamDescr],
   parserfun    :: Parser a
@@ -34,8 +36,6 @@ data CmdLineApp a = CmdLineApp {
   appversion   :: Maybe String,
   appdescr     :: Maybe String
   }
-
-data Parser a = Parser (NiceArgs -> (ParseResult a, NiceArgs))
 
 instance Functor Parser where
   fmap f (Parser g) = Parser (\args ->

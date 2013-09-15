@@ -2,10 +2,10 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 
 module System.Console.EasyConsole.Params (
-  FlagParam,
+  FlagParam (..),
   Descr (..),
-  StdArgParam,
-  ArgSrc,
+  StdArgParam (..),
+  ArgSrc (..),
   Optionality (..)
 ) where
 
