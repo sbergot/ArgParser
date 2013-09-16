@@ -11,17 +11,21 @@ module System.Console.EasyConsole.Params (
 
 import qualified Data.Map                            as M
 import           Data.Maybe
+import           Data.List
 import           System.Console.EasyConsole.BaseType
 import           System.Console.EasyConsole.Parser
 
+deleteMany :: [String] -> Flags -> Flags
+deleteMany keys flags = foldl (flip M.delete) flags keys
+
 takeFlag :: String -> Flags -> (Maybe Args, Flags)
 takeFlag key flags = (args, rest) where
-  args = case catMaybes [lookupflag key, lookupflag short] of
+  args = case mapMaybe lookupflag prefixes of
     [] -> Nothing
     grpargs -> Just $ concat grpargs
   lookupflag _key = M.lookup _key flags
-  rest = M.delete key $ M.delete short flags
-  short = take 1 key
+  rest = deleteMany prefixes flags
+  prefixes = drop 1 $ inits key
 
 data FlagParam a = FlagParam String (Bool -> a)
 
