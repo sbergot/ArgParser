@@ -1,7 +1,8 @@
 module System.Console.EasyConsole.Format (
   CmdLineFormat (..),
   defaultFormat,
-  showCmdLineAppUsage
+  showCmdLineAppUsage,
+  showCmdLineVersion
   ) where
 
 import qualified Data.Map                            as M
@@ -16,6 +17,11 @@ data CmdLineFormat = CmdLineFormat {
 
 defaultFormat :: CmdLineFormat
 defaultFormat = CmdLineFormat 60 20
+
+showCmdLineVersion :: CmdLineApp a -> String
+showCmdLineVersion app = appName ++ appVersion where
+    appName = appname app
+    appVersion = fromMaybe "" $ appversion app
 
 showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
 showCmdLineAppUsage fmt app =

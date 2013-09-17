@@ -1,3 +1,4 @@
+
 module System.Console.EasyConsole.BaseType where
 
 import           Control.Applicative
@@ -30,8 +31,11 @@ instance Applicative ParserSpec where
   ParserSpec d1 p1 <*> ParserSpec d2 p2 =
     ParserSpec (d1 ++ d2) (p1 <*> p2)
 
+type SpecialFlags a = [(ParserSpec Bool, CmdLineApp a -> IO ())]
+
 data CmdLineApp a = CmdLineApp {
   cmdargparser :: ParserSpec a,
+  specialFlags :: SpecialFlags a,
   appname      :: String,
   appversion   :: Maybe String,
   appdescr     :: Maybe String
