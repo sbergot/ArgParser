@@ -1,13 +1,13 @@
 {-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
-module System.Console.EasyConsole.Params (
-  FlagParam (..),
-  Descr (..),
-  StdArgParam (..),
-  ArgSrc (..),
-  Optionality (..)
-) where
+module System.Console.EasyConsole.Params
+  ( FlagParam (..)
+  , Descr (..)
+  , StdArgParam (..)
+  , ArgSrc (..)
+  , Optionality (..)
+  ) where
 
 import qualified Data.Map                            as M
 import           Data.Maybe
@@ -47,9 +47,9 @@ instance ParamSpec FlagParam where
 
 infixl 2 `Descr`
 
-data Descr spec a = Descr {
-  getvalue     :: spec a,
-  getuserdescr :: String
+data Descr spec a = Descr
+  { getvalue     :: spec a
+  , getuserdescr :: String
   }
 
 instance ParamSpec spec => ParamSpec (Descr spec) where

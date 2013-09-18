@@ -1,45 +1,41 @@
-module System.Console.EasyConsole.Format (
-  CmdLineFormat (..),
-  defaultFormat,
-  showCmdLineAppUsage,
-  showCmdLineVersion
+module System.Console.EasyConsole.Format
+  ( CmdLineFormat (..)
+  , defaultFormat
+  , showCmdLineAppUsage
+  , showCmdLineVersion
   ) where
 
 import qualified Data.Map                            as M
 import           Data.Maybe
 import           System.Console.EasyConsole.BaseType
 
-data CmdLineFormat = CmdLineFormat {
-  maxkeywidth    :: Int,
-  keyindentwidth :: Int
+data CmdLineFormat = CmdLineFormat
+  { maxkeywidth    :: Int
+  , keyindentwidth :: Int
   }
 
 defaultFormat :: CmdLineFormat
 defaultFormat = CmdLineFormat 15 1
 
 showCmdLineVersion :: CmdLineApp a -> String
-showCmdLineVersion app = appName ++ appVersion where
-    appName = appname app
-    appVersion = fromMaybe "" $ appversion app
-
-showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
-showCmdLineAppUsage fmt app =
-  appName ++
-  appVersion ++
-  "\n" ++
-  appUsage ++
-  "\n" ++
-  appDescr ++ "\n" ++
-  appParams
- where
+showCmdLineVersion app =  appName ++ appVersion where
   appName = appname app
   appVersion = fromMaybe "" $ appversion app
+
+showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
+showCmdLineAppUsage fmt app = unlines
+  [ showCmdLineVersion app
+  , appUsage
+  , appDescr 
+  , appParams
+  ]
+ where
   appDescr = fromMaybe "" $ appdescr app
   paramdescrs = parserparams $ cmdargparser app
   appParams = formatParamDescrs fmt paramdescrs
-  appUsage = "usage : " ++ usage 
+  appUsage = "usage : " ++ usage
   usage = unwords $ map argUsage paramdescrs
-    
+
 groupByKey :: Ord k => (a -> k) -> [a] -> [(k, [a])]
 groupByKey getkey xs = M.toList $ M.fromListWith (++)
   $ map (\x -> (getkey x, [x])) xs

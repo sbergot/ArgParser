@@ -4,28 +4,28 @@ module System.Console.EasyConsole.BaseType where
 import           Control.Applicative
 import qualified Data.Map            as M
 
-type Arg = String
-type Args = [Arg]
+type Arg   = String
+type Args  = [Arg]
 type Flags = M.Map Arg Args
 type NiceArgs = (Args, Flags)
 type ParseResult a = Either String a
 
-data ParamDescr = ParamDescr {
-  argUsage    :: String,
-  argCategory :: String,
-  argFormat   :: String,
-  argDescr    :: String
+data ParamDescr = ParamDescr
+  { argUsage    :: String
+  , argCategory :: String
+  , argFormat   :: String
+  , argDescr    :: String
   }
 
 data Parser a = Parser (NiceArgs -> (ParseResult a, NiceArgs))
 
-data ParserSpec a = ParserSpec {
-  parserparams :: [ParamDescr],
-  parserfun    :: Parser a
+data ParserSpec a = ParserSpec
+  { parserparams :: [ParamDescr]
+  , parserfun    :: Parser a
   }
 
 instance Functor ParserSpec where
-        fmap f p = p {parserfun = fmap f $ parserfun p}
+  fmap f p = p {parserfun = fmap f $ parserfun p}
 
 instance Applicative ParserSpec where
   pure val = ParserSpec [] $ pure val
@@ -34,12 +34,12 @@ instance Applicative ParserSpec where
 
 type SpecialFlags a = [(ParserSpec Bool, CmdLineApp a -> IO ())]
 
-data CmdLineApp a = CmdLineApp {
-  cmdargparser :: ParserSpec a,
-  specialFlags :: SpecialFlags a,
-  appname      :: String,
-  appversion   :: Maybe String,
-  appdescr     :: Maybe String
+data CmdLineApp a = CmdLineApp
+  { cmdargparser :: ParserSpec a
+  , specialFlags :: SpecialFlags a
+  , appname      :: String
+  , appversion   :: Maybe String
+  , appdescr     :: Maybe String
   }
 
 instance Functor Parser where
