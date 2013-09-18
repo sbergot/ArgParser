@@ -7,7 +7,6 @@ module System.Console.EasyConsole.Format (
 
 import qualified Data.Map                            as M
 import           Data.Maybe
-
 import           System.Console.EasyConsole.BaseType
 
 data CmdLineFormat = CmdLineFormat {
@@ -25,12 +24,21 @@ showCmdLineVersion app = appName ++ appVersion where
 
 showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
 showCmdLineAppUsage fmt app =
-  appName ++ appVersion ++ "\n" ++ appDescr ++ "\n" ++ appUsage where
-    appName = appname app
-    appVersion = fromMaybe "" $ appversion app
-    appDescr = fromMaybe "" $ appdescr app
-    paramdescrs = parserparams $ cmdargparser app
-    appUsage = formatParamDescrs fmt paramdescrs
+  appName ++
+  appVersion ++
+  "\n" ++
+  appUsage ++
+  "\n" ++
+  appDescr ++ "\n" ++
+  appParams
+ where
+  appName = appname app
+  appVersion = fromMaybe "" $ appversion app
+  appDescr = fromMaybe "" $ appdescr app
+  paramdescrs = parserparams $ cmdargparser app
+  appParams = formatParamDescrs fmt paramdescrs
+  appUsage = "usage : " ++ usage 
+  usage = unwords $ map argUsage paramdescrs
     
 groupByKey :: Ord k => (a -> k) -> [a] -> [(k, [a])]
 groupByKey getkey xs = M.toList $ M.fromListWith (++)
