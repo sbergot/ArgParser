@@ -16,7 +16,7 @@ data CmdLineFormat = CmdLineFormat {
   }
 
 defaultFormat :: CmdLineFormat
-defaultFormat = CmdLineFormat 60 20
+defaultFormat = CmdLineFormat 15 1
 
 showCmdLineVersion :: CmdLineApp a -> String
 showCmdLineVersion app = appName ++ appVersion where

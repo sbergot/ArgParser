@@ -35,11 +35,12 @@ runSpecialFlags app args = loop $ specialFlags app where
 
 defaultSpecialFlags :: SpecialFlags a
 defaultSpecialFlags = [
-  (liftParam $ FlagParam "help" id,
+  (flagparser "help",
     putStrLn . showCmdLineAppUsage defaultFormat),
-  (liftParam $ FlagParam "version" id,
+  (flagparser "version",
     putStrLn . showCmdLineVersion)
-  ]
+  ] where
+  flagparser key = liftParam $ FlagParam key id
 
 mkApp :: ParserSpec a -> IO (CmdLineApp a)
 mkApp spec = do

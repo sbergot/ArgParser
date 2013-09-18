@@ -11,6 +11,7 @@ type NiceArgs = (Args, Flags)
 type ParseResult a = Either String a
 
 data ParamDescr = ParamDescr {
+  argUsage    :: String,
   argCategory :: String,
   argFormat   :: String,
   argDescr    :: String

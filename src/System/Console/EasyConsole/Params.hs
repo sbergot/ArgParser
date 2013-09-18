@@ -39,8 +39,13 @@ instance ParamSpec FlagParam where
       (Right $ parse found, (pos, rest)) where
         (args, rest) = takeFlag key flags
         found = isJust args
-  getcategory _ = "optional"
-  getargformat (FlagParam key _) = flagformat key
+  getParamDescr (FlagParam key _) = ParamDescr
+    ("[--" ++ key ++ "]")
+    "optional arguments"
+    (flagformat key)
+    ""
+
+infixl 2 `Descr`
 
 data Descr spec a = Descr {
   getvalue     :: spec a,
@@ -49,9 +54,8 @@ data Descr spec a = Descr {
 
 instance ParamSpec spec => ParamSpec (Descr spec) where
   getparser = getparser . getvalue
-  getcategory = getcategory . getvalue
-  getargformat = getargformat . getvalue
-  getdescr = getuserdescr
+  getParamDescr (Descr inner descr) = 
+    (getParamDescr inner) { argDescr = descr }
 
 data ArgSrc = Flag | Pos
 
@@ -96,9 +100,13 @@ instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
 
     defaultOrError = missing opt
 
-  getcategory (StdArgParam opt _ _ _) = category opt
-  getargformat (StdArgParam _ src key parser) =
-   getkeyformat src key ++ "  " ++ getvalformat parser
+  getParamDescr (StdArgParam opt src key parser) = 
+    ParamDescr (wrap opt usage) (category opt) usage ""
+   where
+    usage = getkeyformat src key ++ "  " ++ getvalformat parser
+    wrap Mandatory msg = msg
+    wrap _         msg = "[" ++ msg ++ "]"
+    
 
 choosesrc :: a -> a -> ArgSrc -> a
 choosesrc flag pos src = case src of
@@ -114,8 +122,8 @@ missing Mandatory msg = Left msg
 missing (Optional val) _ = Right val
 
 category :: Optionality a -> String
-category Mandatory = "mandatory"
-category _         = "optional"
+category Mandatory = "mandatory arguments"
+category _         = "optional arguments"
 
 logkey :: String -> ParseResult a -> ParseResult a
 logkey key (Left err) = Left $ "fail to parse '" ++ key ++ "' : " ++ err
