@@ -67,12 +67,14 @@ class ParserArg argformat where
   getvalformat :: (argformat -> res) -> String
 
 instance ParserArg Arg where
-  runflagparse _        [] = Left "missing arg"
-  runflagparse parser [val] = Right $ parser val
-  runflagparse _        _     = Left "too many args"
+  runflagparse parser args = case args of
+    []    -> Left "missing arg"
+    [val] -> Right $ parser val
+    _     -> Left "too many args"
 
-  runposparse _ [] = (Left "missing arg", [])
-  runposparse parser (val:rest) = (Right $ parser val, rest)
+  runposparse parser args = case args of
+   []       -> (Left "missing arg", [])
+   val:rest -> (Right $ parser val, rest)
 
   getvalformat _ = "VAL"
 
@@ -81,7 +83,11 @@ instance ParserArg Args where
   runposparse  parser vals = (Right $ parser vals, [])
   getvalformat _ = "VAL [VALS ...]"
 
-data StdArgParam argformat a =  StdArgParam (Optionality a) ArgSrc String (argformat -> a)
+data StdArgParam argformat a =  StdArgParam
+  (Optionality a)
+  ArgSrc
+  String
+  (argformat -> a)
 
 instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
   getparser (StdArgParam opt src key parse) = Parser rawparse where
@@ -114,17 +120,19 @@ choosesrc flag pos src = case src of
   Pos -> pos
 
 getkeyformat :: ArgSrc -> String -> String
-getkeyformat Pos key = key
-getkeyformat Flag key = flagformat key
+getkeyformat = choosesrc id flagformat
 
 missing :: Optionality a -> String -> ParseResult a
-missing Mandatory msg = Left msg
-missing (Optional val) _ = Right val
+missing opt msg = case opt of
+  Mandatory    -> Left msg
+  Optional val -> Right val
 
 category :: Optionality a -> String
-category Mandatory = "mandatory arguments"
-category _         = "optional arguments"
+category opt = case opt of
+  Mandatory -> "mandatory arguments"
+  _         -> "optional arguments"
 
 logkey :: String -> ParseResult a -> ParseResult a
-logkey key (Left err) = Left $ "fail to parse '" ++ key ++ "' : " ++ err
-logkey _   val = val
+logkey key result = case result of
+  Left err -> Left $ "fail to parse '" ++ key ++ "' : " ++ err
+  val      -> val
