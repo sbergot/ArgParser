@@ -55,7 +55,9 @@ defaultSpecialFlags =
   , (flagparser "version", showParser showCmdLineVersion)
   ] where
   flagparser key = liftParam $ FlagParam key id
-  showParser action = const . const . putStrLn . action
+  -- ignore args and appaction and show the result
+  showParser action = newaction where
+    newaction app _ _  = putStrLn $ action app
 
 mkApp
   :: ParserSpec a

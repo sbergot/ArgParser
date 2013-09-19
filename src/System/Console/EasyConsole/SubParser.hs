@@ -1,12 +1,20 @@
-module System.Console.EasyConsole.SubParser where
+module System.Console.EasyConsole.SubParser
+ ( mkSubParser
+ ) where
 
-import System.Console.EasyConsole.BaseType
-import System.Console.EasyConsole.Params
-import System.Console.EasyConsole.Parser
-import System.Console.EasyConsole.Run
+import           System.Console.EasyConsole.BaseType
+import           System.Console.EasyConsole.Params
+import           System.Console.EasyConsole.Parser
+import           System.Console.EasyConsole.Run
+import           System.Environment
 
-mkSubParser :: String -> [(Arg, CmdLineApp a)] -> CmdLineApp a
-mkSubParser name parsers = CmdLineApp
+mkSubParser :: [(Arg, CmdLineApp a)] -> IO (CmdLineApp a)
+mkSubParser parsers = do
+  name <- getProgName
+  return $ mkSubParserWithName name parsers
+
+mkSubParserWithName :: String -> [(Arg, CmdLineApp a)] -> CmdLineApp a
+mkSubParserWithName name parsers = CmdLineApp
   parser
   cmdSpecialFlags
   name
@@ -26,4 +34,4 @@ mkSpecialFlag (arg, subapp) = (parser, action) where
   action _ (posargs, flagargs) =
     runAppWith (drop 1 posargs, flagargs) subapp
 
-  
+
