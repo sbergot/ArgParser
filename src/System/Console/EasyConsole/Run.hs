@@ -3,8 +3,8 @@ module System.Console.EasyConsole.Run
   , mkApp
   ) where
 
-import           Data.Maybe
 import           Control.Monad
+import           Data.Maybe
 import           System.Console.EasyConsole.ArgsProcess
 import           System.Console.EasyConsole.BaseType
 import           System.Console.EasyConsole.Format

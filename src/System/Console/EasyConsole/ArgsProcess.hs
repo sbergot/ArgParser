@@ -4,22 +4,29 @@ import           Data.List
 import qualified Data.Map                            as M
 import           System.Console.EasyConsole.BaseType
 
-data Token = Flag Arg | Pos Arg
+preprocess :: Args -> NiceArgs
+preprocess args = (pos, flagArgs) where
+  (pos, rest) =  collectPos $ tokenize args
+  flagArgs = M.fromList $ unfoldr parseFlag rest
+
+data TokenType = Flag | Pos
+data Token = Token TokenType Arg
 
 isPos :: Token -> Bool
-isPos (Pos _) = True
-isPos _ = False
+isPos (Token tokenType _) = case tokenType of
+  Flag -> True
+  _    -> False
 
 getWord :: Token -> Arg
-getWord (Pos word) = word
-getWord (Flag word) = word
+getWord (Token _ word) = word
 
 tokenize :: Args -> [Token]
 tokenize = concatMap arg2token where
   arg2token :: Arg -> [Token]
-  arg2token ('-':'-':word) = [Flag word]
-  arg2token ('-':word) =  map (Flag . (:[]) ) word
-  arg2token word = [Pos word]
+  arg2token arg = case arg of
+    '-':'-':word -> [Token Flag word]
+    '-':word     ->  map (Token Flag . (:[]) ) word
+    word         -> [Token Pos word]
 
 collectPos :: [Token] -> (Args, [Token])
 collectPos tokens = (pos, rest) where
@@ -27,11 +34,7 @@ collectPos tokens = (pos, rest) where
   pos = map getWord posargs
 
 parseFlag :: [Token] -> Maybe ((Arg, Args), [Token])
-parseFlag (Flag word : tokens) = Just ((word, args), rest) where
-  (args, rest) = collectPos tokens
-parseFlag _ = Nothing
-
-preprocess :: Args -> NiceArgs
-preprocess args = (pos, flagArgs) where
-  (pos, rest) =  collectPos $ tokenize args
-  flagArgs = M.fromList $ unfoldr parseFlag rest
+parseFlag tokens = case tokens of
+  Token Flag word : othertokens -> Just ((word, args), rest)
+    where (args, rest) = collectPos othertokens
+  _ -> Nothing
