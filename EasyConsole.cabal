@@ -16,6 +16,7 @@ library
                    System.Console.EasyConsole.Format,
                    System.Console.EasyConsole.Params,
                    System.Console.EasyConsole.Parser,
-                   System.Console.EasyConsole.Run
+                   System.Console.EasyConsole.Run,
+                   System.Console.EasyConsole.SubParser
   exposed-modules:  System.Console.EasyConsole
 
