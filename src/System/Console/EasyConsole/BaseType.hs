@@ -8,7 +8,7 @@ Maintainer  :  simon.bergot@gmail.com
 Stability   :  unstable
 Portability :  portable
 
-Base types shared by several EasyConsole modules.
+ Base types shared by several EasyConsole modules.
 -}
 
 module System.Console.EasyConsole.BaseType where

@@ -1,3 +1,16 @@
+{- |
+Module      :  $Header$
+Description :  parser functions
+Copyright   :  (c) Simon Bergot
+License     :  BSD3
+
+Maintainer  :  simon.bergot@gmail.com
+Stability   :  unstable
+Portability :  portable
+
+ Functions used to specify a parser for command line arguments.
+-}
+
 module System.Console.EasyConsole.Parser
   ( ParamSpec (..)
   , liftParam

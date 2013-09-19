@@ -1,3 +1,16 @@
+{- |
+Module      :  $Header$
+Description :  command line app functions
+Copyright   :  (c) Simon Bergot
+License     :  BSD3
+
+Maintainer  :  simon.bergot@gmail.com
+Stability   :  unstable
+Portability :  portable
+
+ Functions used to build and run command line applications.
+-}
+
 module System.Console.EasyConsole.Run
   ( runApp
   , runAppWith
@@ -17,18 +30,22 @@ import           System.Environment
 runParser :: Parser a -> NiceArgs -> ParseResult a
 runParser (Parser parse) args = fst $ parse args
 
+-- | Runs a command line application with the
+--   user provided arguments.
 runApp
-  :: CmdLineApp a
-  -> (a -> IO ())
+  :: CmdLineApp a -- ^ Command line spec
+  -> (a -> IO ()) -- ^ Process to run if the parsing success
   -> IO ()
 runApp appspec appfun = do
   args <- getArgs
   runAppWith (preprocess args) appspec appfun
 
+-- | Runs the command line application with the arguments
+--   provided to the function.
 runAppWith 
-  :: NiceArgs
-  -> CmdLineApp a
-  -> (a -> IO ())
+  :: NiceArgs     -- ^ Arguments to parse
+  -> CmdLineApp a -- ^ Command line spec
+  -> (a -> IO ()) -- ^ Process to run if the parsing success
   -> IO ()
 runAppWith niceargs appspec appfun = do
   let parser = parserfun $ cmdargparser appspec
@@ -49,6 +66,7 @@ runSpecialFlags app args appaction = loop $ specialFlags app where
    where
     specialParseResult = runParser (parserfun parse) args
 
+-- | default version and help special actions
 defaultSpecialFlags :: [SpecialFlag a]
 defaultSpecialFlags =
   [ (flagparser "help", showParser $ showCmdLineAppUsage defaultFormat)
@@ -59,6 +77,8 @@ defaultSpecialFlags =
   showParser action = newaction where
     newaction app _ _  = putStrLn $ action app
 
+-- | Build an application with no version/description
+--   and with a name equal to the file name.
 mkApp
   :: ParserSpec a
   -> IO (CmdLineApp a)
