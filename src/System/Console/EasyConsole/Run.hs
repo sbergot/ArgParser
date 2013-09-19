@@ -8,7 +8,7 @@ Maintainer  :  simon.bergot@gmail.com
 Stability   :  unstable
 Portability :  portable
 
- Functions used to build and run command line applications.
+Functions used to build and run command line applications.
 -}
 
 module System.Console.EasyConsole.Run

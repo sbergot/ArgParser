@@ -8,7 +8,7 @@ Maintainer  :  simon.bergot@gmail.com
 Stability   :  unstable
 Portability :  portable
 
- Functions used to specify a parser for command line arguments.
+Functions used to specify a parser for command line arguments.
 -}
 
 module System.Console.EasyConsole.Parser
