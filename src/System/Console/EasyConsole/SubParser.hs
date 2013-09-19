@@ -15,14 +15,15 @@ mkSubParser name parsers = CmdLineApp
  where
   parser = commandParser (error "impossible")
   cmdSpecialFlags = commands ++ defaultSpecialFlags
-  commands = map foo parsers
+  commands = map mkSpecialFlag parsers
 
 commandParser :: (Arg -> a) -> ParserSpec a
 commandParser = liftParam . StdArgParam Mandatory Pos "command"
 
-foo :: (Arg, CmdLineApp a) -> SpecialFlag a
-foo (arg, subapp) = (parser, action) where
+mkSpecialFlag :: (Arg, CmdLineApp a) -> SpecialFlag a
+mkSpecialFlag (arg, subapp) = (parser, action) where
   parser = commandParser (== arg)
-  action app args = subapp 
+  action _ (posargs, flagargs) =
+    runAppWith (drop 1 posargs, flagargs) subapp
 
   

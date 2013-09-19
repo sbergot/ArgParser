@@ -32,7 +32,13 @@ instance Applicative ParserSpec where
   ParserSpec d1 p1 <*> ParserSpec d2 p2 =
     ParserSpec (d1 ++ d2) (p1 <*> p2)
 
-type SpecialFlag a = (ParserSpec Bool, CmdLineApp a -> NiceArgs -> IO ())
+type SpecialAction a =
+  CmdLineApp a
+  -> NiceArgs
+  -> (a -> IO ())
+  -> IO ()
+
+type SpecialFlag a = (ParserSpec Bool, SpecialAction a)
 
 data CmdLineApp a = CmdLineApp
   { cmdargparser :: ParserSpec a

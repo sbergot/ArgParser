@@ -1,5 +1,6 @@
 module System.Console.EasyConsole.Run
   ( runApp
+  , runAppWith
   , mkApp
   , defaultSpecialFlags
   ) where
@@ -22,21 +23,28 @@ runApp
   -> IO ()
 runApp appspec appfun = do
   args <- getArgs
+  runAppWith (preprocess args) appspec appfun
+
+runAppWith 
+  :: NiceArgs
+  -> CmdLineApp a
+  -> (a -> IO ())
+  -> IO ()
+runAppWith niceargs appspec appfun = do
   let parser = parserfun $ cmdargparser appspec
-      niceargs = preprocess args
       normalprocess = case runParser parser niceargs of
         Left errmsg -> putStrLn errmsg
         Right val -> appfun val
-      specialprocess = runSpecialFlags appspec niceargs
+      specialprocess = runSpecialFlags appspec niceargs appfun
   fromMaybe normalprocess specialprocess
 
-runSpecialFlags :: CmdLineApp a -> NiceArgs -> Maybe (IO ())
-runSpecialFlags app args = loop $ specialFlags app where
+runSpecialFlags :: CmdLineApp a -> NiceArgs -> (a -> IO ()) -> Maybe (IO ())
+runSpecialFlags app args appaction = loop $ specialFlags app where
   loop flags = case flags of
     []                   -> Nothing
     (parse, action):rest -> runSpecialAction parse action rest
   runSpecialAction parse action other = case specialParseResult of
-    Right True -> Just $ action app args
+    Right True -> Just $ action app args appaction
     _          -> loop other
    where
     specialParseResult = runParser (parserfun parse) args
@@ -47,7 +55,7 @@ defaultSpecialFlags =
   , (flagparser "version", showParser showCmdLineVersion)
   ] where
   flagparser key = liftParam $ FlagParam key id
-  showParser action = const . putStrLn . action
+  showParser action = const . const . putStrLn . action
 
 mkApp
   :: ParserSpec a
