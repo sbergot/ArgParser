@@ -1,6 +1,7 @@
 module System.Console.EasyConsole.Run
   ( runApp
   , mkApp
+  , defaultSpecialFlags
   ) where
 
 import           Control.Monad
@@ -35,17 +36,18 @@ runSpecialFlags app args = loop $ specialFlags app where
     []                   -> Nothing
     (parse, action):rest -> runSpecialAction parse action rest
   runSpecialAction parse action other = case specialParseResult of
-    Right True -> Just $ action app
+    Right True -> Just $ action app args
     _          -> loop other
    where
     specialParseResult = runParser (parserfun parse) args
 
-defaultSpecialFlags :: SpecialFlags a
+defaultSpecialFlags :: [SpecialFlag a]
 defaultSpecialFlags =
-  [ (flagparser "help", putStrLn . showCmdLineAppUsage defaultFormat)
-  , (flagparser "version", putStrLn . showCmdLineVersion)
+  [ (flagparser "help", showParser $ showCmdLineAppUsage defaultFormat)
+  , (flagparser "version", showParser showCmdLineVersion)
   ] where
   flagparser key = liftParam $ FlagParam key id
+  showParser action = const . putStrLn . action
 
 mkApp
   :: ParserSpec a
