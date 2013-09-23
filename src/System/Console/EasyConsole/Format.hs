@@ -1,27 +1,50 @@
-module System.Console.EasyConsole.Format
-  ( CmdLineFormat (..)
-  , defaultFormat
-  , showCmdLineAppUsage
+{- |
+Module      :  $Header$
+Copyright   :  (c) Simon Bergot
+License     :  BSD3
+
+Maintainer  :  simon.bergot@gmail.com
+Stability   :  unstable
+Portability :  portable
+
+Module containing helpers to print information
+about a parser.
+-}
+
+module System.Console.EasyConsole.Format (
+  -- * Print information about the parser
+    showCmdLineAppUsage
   , showCmdLineVersion
+    -- * Help formatting
+  , CmdLineFormat (..)
+  , defaultFormat
   ) where
 
 import qualified Data.Map                            as M
 import           Data.Maybe
 import           System.Console.EasyConsole.BaseType
 
+-- | Specification of the help layout
 data CmdLineFormat = CmdLineFormat
   { maxKeyWidth    :: Int
   , keyIndentWidth :: Int
   }
 
+-- | Default specification for the help layout
 defaultFormat :: CmdLineFormat
 defaultFormat = CmdLineFormat 15 1
 
+-- | Prints the application name and version
 showCmdLineVersion :: CmdLineApp a -> String
 showCmdLineVersion app =  appName ++ appVersion where
   appName = getAppName app
   appVersion = fromMaybe "" $ getAppVersion app
 
+-- | Prints a long usage such as
+--
+-- @
+--   foo bar [bay]
+-- @
 showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
 showCmdLineAppUsage fmt app = unlines
   [ showCmdLineVersion app

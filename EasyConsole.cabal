@@ -19,13 +19,15 @@ library
   ghc-options:      -Wall
   other-modules:    
                    System.Console.EasyConsole.ArgsProcess,
-                   System.Console.EasyConsole.BaseType,
                    System.Console.EasyConsole.Format,
-                   System.Console.EasyConsole.Params,
-                   System.Console.EasyConsole.Parser,
-                   System.Console.EasyConsole.Run,
-                   System.Console.EasyConsole.SubParser
-  exposed-modules:  System.Console.EasyConsole
+                   System.Console.EasyConsole.QuickParams
+  exposed-modules:  
+                    System.Console.EasyConsole,
+                    System.Console.EasyConsole.BaseType,
+                    System.Console.EasyConsole.Params,
+                    System.Console.EasyConsole.Parser,
+                    System.Console.EasyConsole.Run,
+                    System.Console.EasyConsole.SubParser
 
 source-repository head
   type:     git
