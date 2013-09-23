@@ -21,6 +21,7 @@ module System.Console.EasyConsole.Parser
 import           Control.Applicative
 import           System.Console.EasyConsole.BaseType
 
+-- | interface allowing to define a basic block of a command line parser
 class ParamSpec spec where
   getparser :: spec res -> Parser res
   getParamDescr :: spec res -> ParamDescr

@@ -16,6 +16,7 @@ import           Data.List
 import qualified Data.Map                            as M
 import           System.Console.EasyConsole.BaseType
 
+-- | Separate positional arguments from flag arguments
 preprocess :: Args -> NiceArgs
 preprocess args = (pos, flagArgs) where
   (pos, rest) =  collectPos $ tokenize args

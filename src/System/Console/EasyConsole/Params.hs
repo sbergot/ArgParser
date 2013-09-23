@@ -39,7 +39,14 @@ takeFlag key flags = (args, rest) where
   rest = deleteMany prefixes flags
   prefixes = drop 1 $ inits key
 
-data FlagParam a = FlagParam String (Bool -> a)
+-- | A simple command line flag.
+--   The parsing function will be passed True
+--   if the flag is present, if the flag is provided to
+--   the command line, and False otherwise.
+--   For a key "foo", the flag can either be "--foo" or "-f"
+data FlagParam a = FlagParam
+  String      -- ^ key
+  (Bool -> a) -- ^ parsing function
 
 flagformat :: String -> String
 flagformat key = "-" ++ first ++ ", --" ++ key where
@@ -59,6 +66,9 @@ instance ParamSpec FlagParam where
 
 infixl 2 `Descr`
 
+-- | Allows the user to provide a description for a particular parameter.
+--   Can be used as an infix operator:
+-- > myparam `Descr` "this is my description"
 data Descr spec a = Descr
   { getvalue     :: spec a
   , getuserdescr :: String
@@ -69,8 +79,12 @@ instance ParamSpec spec => ParamSpec (Descr spec) where
   getParamDescr (Descr inner descr) = 
     (getParamDescr inner) { argDescr = descr }
 
+-- | Defines the source of a parameter: either positional or flag.
 data ArgSrc = Flag | Pos
 
+-- | Defines whether a parameter is mandatory or optional.
+--   When a parameter is marked as Optional, a default value must
+--   be provided.
 data Optionality a = Mandatory | Optional a
 
 class ParserArg argformat where
@@ -95,11 +109,22 @@ instance ParserArg Args where
   runposparse  parser vals = (Right $ parser vals, [])
   getvalformat _ = "VAL [VALS ...]"
 
+-- | Defines a parameter consuming arguments on the command line.
+--   The source defines whether the arguments are positional:
+-- > myprog posarg1 posarg2 ...
+--   or are taken from a flag:
+-- > myprog --myflag flagarg1 flagarg2 ...
+--   or:
+-- > myprog -m flagarg1 flagarg2 ...
+--
+--   One can provide two signatures of parsing function:
+-- > @String -> a@ means that the parameter expect exactly one arg 
+-- > @[String] -> a@ means that the parameter expect any number of args 
 data StdArgParam argformat a =  StdArgParam
-  (Optionality a)
-  ArgSrc
-  String
-  (argformat -> a)
+  (Optionality a)  -- ^ optionality
+  ArgSrc           -- ^ source
+  String           -- ^ key
+  (argformat -> a) -- ^ parsing function
 
 instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
   getparser (StdArgParam opt src key parse) = Parser rawparse where
