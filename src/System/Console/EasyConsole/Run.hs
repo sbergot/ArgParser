@@ -48,11 +48,11 @@ parseArgs
   :: NiceArgs     -- ^ Arguments to parse
   -> CmdLineApp a -- ^ Command line spec
   -> ParseResult a
-parseArgs niceargs appspec = do
-  let parser = parserfun $ cmdargparser appspec
-      normalprocess = runParser parser niceargs
-      specialprocess = runSpecialFlags appspec niceargs
-  fromMaybe normalprocess specialprocess
+parseArgs niceargs appspec = fromMaybe normalprocess specialprocess where
+  parser = parserfun $ cmdargparser appspec
+  normalprocess = runParser parser niceargs
+  specialprocess = runSpecialFlags appspec niceargs
+  
 
 runSpecialFlags :: CmdLineApp a -> NiceArgs -> Maybe (ParseResult a)
 runSpecialFlags app args = loop $ specialFlags app where
@@ -60,7 +60,7 @@ runSpecialFlags app args = loop $ specialFlags app where
     []                   -> Nothing
     (parse, action):rest -> runSpecialAction parse action rest
   runSpecialAction parse action other = case specialParseResult of
-    Right True -> Just $ action app args appaction
+    Right True -> Just $ action app args
     _          -> loop other
    where
     specialParseResult = runParser (parserfun parse) args
@@ -74,7 +74,7 @@ defaultSpecialFlags =
   flagparser key = liftParam $ FlagParam key id
   -- ignore args and appaction and show the result
   showParser action = newaction where
-    newaction app _ _  = putStrLn $ action app
+    newaction app _  = Left $ action app
 
 -- | Build an application with no version/description
 --   and with a name equal to the file name.
