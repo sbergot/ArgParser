@@ -13,7 +13,7 @@ Functions used to build and run command line applications.
 
 module System.Console.EasyConsole.Run
   ( runApp
-  , runAppWith
+  , parseArgs
   , mkApp
   , defaultSpecialFlags
   ) where
@@ -38,25 +38,24 @@ runApp
   -> IO ()
 runApp appspec appfun = do
   args <- getArgs
-  runAppWith (preprocess args) appspec appfun
+  case parseArgs (preprocess args) appspec of
+    Left msg -> putStrLn msg
+    Right val -> appfun val
 
 -- | Runs the command line application with the arguments
 --   provided to the function.
-runAppWith 
+parseArgs
   :: NiceArgs     -- ^ Arguments to parse
   -> CmdLineApp a -- ^ Command line spec
-  -> (a -> IO ()) -- ^ Process to run if the parsing success
-  -> IO ()
-runAppWith niceargs appspec appfun = do
+  -> ParseResult a
+parseArgs niceargs appspec = do
   let parser = parserfun $ cmdargparser appspec
-      normalprocess = case runParser parser niceargs of
-        Left errmsg -> putStrLn errmsg
-        Right val -> appfun val
-      specialprocess = runSpecialFlags appspec niceargs appfun
+      normalprocess = runParser parser niceargs
+      specialprocess = runSpecialFlags appspec niceargs
   fromMaybe normalprocess specialprocess
 
-runSpecialFlags :: CmdLineApp a -> NiceArgs -> (a -> IO ()) -> Maybe (IO ())
-runSpecialFlags app args appaction = loop $ specialFlags app where
+runSpecialFlags :: CmdLineApp a -> NiceArgs -> Maybe (ParseResult a)
+runSpecialFlags app args = loop $ specialFlags app where
   loop flags = case flags of
     []                   -> Nothing
     (parse, action):rest -> runSpecialAction parse action rest

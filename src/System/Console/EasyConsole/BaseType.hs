@@ -65,8 +65,7 @@ instance Applicative ParserSpec where
 type SpecialAction a =
   CmdLineApp a
   -> NiceArgs
-  -> (a -> IO ())
-  -> IO ()
+  -> ParseResult a
 
 -- | A special parser allowing to
 --   perform standard actions.
