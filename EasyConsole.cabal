@@ -9,7 +9,7 @@ license:        BSD3
 category:       Console
 synopsis:       Command line parsing framework for console applications
 description:    Provides a combinator library for defining a command line parser.
-license-file:   http://opensource.org/licenses/BSD-3-Clause
+license-file:   LICENSE
 
 library 
   build-depends:    
