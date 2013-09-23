@@ -7,3 +7,4 @@ import           System.Console.EasyConsole.SubParser as X
 
 -- TODO documentation
 -- TODO rename to ArgParser
+-- TODO add params shortcuts
