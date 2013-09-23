@@ -18,6 +18,14 @@ module System.Console.EasyConsole (
   , parsedBy
   , andBy
   -- * Creating parameters
+  -- | Values provided to 'parsedBy' and 'andBy' should be created with
+  --   the following functions. When providing a conversion function,
+  --   you may provide two kind of signatures:
+  --
+  --   * @String -> a@ means that the parameter expect exactly one arg 
+  --
+  --   * @[String] -> a@ means that the parameter expect any number of args 
+
   -- ** Flag parameters
   , boolFlag
   , reqFlag
