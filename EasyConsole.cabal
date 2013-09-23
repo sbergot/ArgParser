@@ -1,12 +1,19 @@
 name:           EasyConsole
 version:        0.1.5
-cabal-version:  >=1.2
+cabal-version:  >= 1.6
 build-type:     Simple
 author:         sberg
+stability:      unstable
+maintainer:     simon.bergot@gmail.com
+license:        BSD3
+category:       Console
+synopsis:       Command line parsing framework for console applications
+description:    Provides a combinator library for defining a command line parser.
+license-file:   http://opensource.org/licenses/BSD-3-Clause
 
 library 
   build-depends:    
-                   base >= 4,
+                   base >= 4 && < 4.7,
                    containers
   hs-source-dirs:   src
   ghc-options:      -Wall
@@ -20,3 +27,6 @@ library
                    System.Console.EasyConsole.SubParser
   exposed-modules:  System.Console.EasyConsole
 
+source-repository head
+  type:     git
+  location: https://github.com/sbergot/EasyConsole 

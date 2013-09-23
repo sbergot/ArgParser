@@ -31,7 +31,8 @@ runParser :: Parser a -> NiceArgs -> ParseResult a
 runParser (Parser parse) args = fst $ parse args
 
 -- | Runs a command line application with the
---   user provided arguments.
+--   user provided arguments. If the parsing succeeds,
+--   run the application. Print the returned message otherwise 
 runApp
   :: CmdLineApp a -- ^ Command line spec
   -> (a -> IO ()) -- ^ Process to run if the parsing success
@@ -42,7 +43,7 @@ runApp appspec appfun = do
     Left msg -> putStrLn msg
     Right val -> appfun val
 
--- | Runs the command line application with the arguments
+-- | Parse the arguments with the parser
 --   provided to the function.
 parseArgs
   :: NiceArgs     -- ^ Arguments to parse
@@ -72,7 +73,7 @@ defaultSpecialFlags =
   , (flagparser "version", showParser showCmdLineVersion)
   ] where
   flagparser key = liftParam $ FlagParam key id
-  -- ignore args and appaction and show the result
+  -- ignore args and show the result
   showParser action = newaction where
     newaction app _  = Left $ action app
 
