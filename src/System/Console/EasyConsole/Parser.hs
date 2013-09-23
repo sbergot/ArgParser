@@ -34,7 +34,7 @@ liftParam param = ParserSpec
 infixl 1 `andBy`
 -- | Build a parser from a parser and a ParamSpec
 --
--- > MyApp `parsedby` myparamspec `andby` myotherparamspec
+-- > MyApp `parsedBy` myparamspec `andBy` myotherparamspec
 andBy
   :: ParamSpec spec
   => ParserSpec (a -> b)
@@ -45,7 +45,7 @@ andBy parser param = parser <*> liftParam param
 infixl 1 `parsedBy`
 -- | Build a parser from a type constructor and a ParamSpec
 --
--- > MyApp `parsedby` myparamspec
+-- > MyApp `parsedBy` myparamspec
 parsedBy
   :: ParamSpec spec
   => (a -> b)

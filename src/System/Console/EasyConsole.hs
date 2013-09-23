@@ -1,5 +1,5 @@
 module System.Console.EasyConsole (
-    module T
+    module System.Console.EasyConsole.BaseType
   -- * Creating a parser
   , mkApp
   , mkSubParser
@@ -15,7 +15,7 @@ module System.Console.EasyConsole (
   , reqPos
   , optPos
   ) where
-import           System.Console.EasyConsole.BaseType    as T
+import           System.Console.EasyConsole.BaseType
 import           System.Console.EasyConsole.Parser      (andBy, parsedBy)
 import           System.Console.EasyConsole.QuickParams
 import           System.Console.EasyConsole.Run         (mkApp, runApp)
