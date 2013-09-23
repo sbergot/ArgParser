@@ -10,8 +10,8 @@ import           Data.Maybe
 import           System.Console.EasyConsole.BaseType
 
 data CmdLineFormat = CmdLineFormat
-  { maxkeywidth    :: Int
-  , keyindentwidth :: Int
+  { maxKeyWidth    :: Int
+  , keyIndentWidth :: Int
   }
 
 defaultFormat :: CmdLineFormat
@@ -52,9 +52,9 @@ formatParamDescrs fmt paramdescrs = unlines $ map showCategory categories where
 showargformat :: CmdLineFormat -> ParamDescr -> String
 showargformat fmt descr =
   keyindent ++ formattedkey ++ sep ++ descrtext where
-    keyindent = replicate (keyindentwidth fmt) ' '
+    keyindent = replicate (keyIndentWidth fmt) ' '
     formattedkey = argFormat descr
-    _maxkeywidth = maxkeywidth fmt
+    _maxkeywidth = maxKeyWidth fmt
     padding = _maxkeywidth - length formattedkey
     sep = if padding > 0
       then replicate padding ' '

@@ -13,8 +13,8 @@ Functions used to specify a parser for command line arguments.
 module System.Console.EasyConsole.Parser
   ( ParamSpec (..)
   , liftParam
-  , parsedby
-  , andby
+  , parsedBy
+  , andBy
   ) where
 
 import           Control.Applicative
@@ -22,33 +22,33 @@ import           System.Console.EasyConsole.BaseType
 
 -- | interface allowing to define a basic block of a command line parser
 class ParamSpec spec where
-  getparser :: spec res -> Parser res
+  getParser :: spec res -> Parser res
   getParamDescr :: spec res -> ParamDescr
 
 -- | Converts any "ParamSpec" to a "ParserSpec" 
 liftParam :: ParamSpec spec => spec res -> ParserSpec res
 liftParam param = ParserSpec
   [getParamDescr param]
-  $ getparser param
+  $ getParser param
 
-infixl 1 `andby`
+infixl 1 `andBy`
 -- | Build a parser from a parser and a ParamSpec
 --
 -- > MyApp `parsedby` myparamspec `andby` myotherparamspec
-andby
+andBy
   :: ParamSpec spec
   => ParserSpec (a -> b)
   -> spec a
   -> ParserSpec b
-andby parser param = parser <*> liftParam param
+andBy parser param = parser <*> liftParam param
 
-infixl 1 `parsedby`
+infixl 1 `parsedBy`
 -- | Build a parser from a type constructor and a ParamSpec
 --
 -- > MyApp `parsedby` myparamspec
-parsedby
+parsedBy
   :: ParamSpec spec
   => (a -> b)
   -> spec a
   -> ParserSpec b
-parsedby constr firstarg = constr <$> liftParam firstarg
+parsedBy constr firstarg = constr <$> liftParam firstarg

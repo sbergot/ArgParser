@@ -61,7 +61,7 @@ flagformat key = "-" ++ first ++ ", --" ++ key where
   first = take 1 key
 
 instance ParamSpec FlagParam where
-  getparser (FlagParam key parse) = Parser rawparse where
+  getParser (FlagParam key parse) = Parser rawparse where
     rawparse (pos, flags) =
       (Right $ parse found, (pos, rest)) where
         (args, rest) = takeFlag key flags
@@ -84,7 +84,7 @@ data Descr spec a = Descr
   }
 
 instance ParamSpec spec => ParamSpec (Descr spec) where
-  getparser = getparser . getvalue
+  getParser = getParser . getvalue
   getParamDescr (Descr inner descr) = 
     (getParamDescr inner) { argDescr = descr }
 
@@ -140,7 +140,7 @@ data StdArgParam argformat a =
   StdArgParam (Optionality a) ArgSrc Key (argformat -> a)
 
 instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
-  getparser (StdArgParam opt src key parse) = Parser rawparse where
+  getParser (StdArgParam opt src key parse) = Parser rawparse where
     rawparse = choosesrc flagparse posparse src
 
     flagparse (pos, flags) = (logkey key res, (pos, rest)) where
