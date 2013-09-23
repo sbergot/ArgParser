@@ -1,6 +1,5 @@
 {- |
 Module      :  $Header$
-Description :  command line app functions
 Copyright   :  (c) Simon Bergot
 License     :  BSD3
 
@@ -11,9 +10,11 @@ Portability :  portable
 Functions used to build and run command line applications.
 -}
 
-module System.Console.EasyConsole.Run
-  ( runApp
+module System.Console.EasyConsole.Run (
+  -- * Running a parser
+    runApp
   , parseArgs
+  -- * Building a parser
   , mkApp
   , defaultSpecialFlags
   ) where

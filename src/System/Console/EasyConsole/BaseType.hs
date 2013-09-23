@@ -1,6 +1,5 @@
 {- |
 Module      :  $Header$
-Description :  base types
 Copyright   :  (c) Simon Bergot
 License     :  BSD3
 

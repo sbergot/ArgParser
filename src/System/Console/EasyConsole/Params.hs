@@ -13,12 +13,17 @@ Portability :  portable
 Parameters are basic building blocks of a command line parser.
 -}
 
-module System.Console.EasyConsole.Params
-  ( FlagParam (..)
-  , Descr (..)
-  , StdArgParam (..)
+module System.Console.EasyConsole.Params (
+  -- * Standard constructors
+  -- ** Constructor
+   StdArgParam (..)
+  -- ** Misc types
   , ArgSrc (..)
   , Optionality (..)
+  , Key
+  -- * Special constructors
+  , FlagParam (..)
+  , Descr (..)
   ) where
 
 import qualified Data.Map                            as M
@@ -26,6 +31,10 @@ import           Data.Maybe
 import           Data.List
 import           System.Console.EasyConsole.BaseType
 import           System.Console.EasyConsole.Parser
+
+-- | identifier used to specify the name of a flag
+--   or a positional argument.
+type Key = String
 
 deleteMany :: [String] -> Flags -> Flags
 deleteMany keys flags = foldl (flip M.delete) flags keys
@@ -43,10 +52,10 @@ takeFlag key flags = (args, rest) where
 --   The parsing function will be passed True
 --   if the flag is present, if the flag is provided to
 --   the command line, and False otherwise.
---   For a key "foo", the flag can either be "--foo" or "-f"
-data FlagParam a = FlagParam
-  String      -- ^ key
-  (Bool -> a) -- ^ parsing function
+--   For a key \"foo\", the flag can either be \"--foo\" or \"-f\"
+data FlagParam a =
+  -- | Usage: @FlagParam "mykey" myfunc@
+  FlagParam Key (Bool -> a)
 
 flagformat :: String -> String
 flagformat key = "-" ++ first ++ ", --" ++ key where
@@ -68,6 +77,7 @@ infixl 2 `Descr`
 
 -- | Allows the user to provide a description for a particular parameter.
 --   Can be used as an infix operator:
+--
 -- > myparam `Descr` "this is my description"
 data Descr spec a = Descr
   { getvalue     :: spec a
@@ -111,20 +121,24 @@ instance ParserArg Args where
 
 -- | Defines a parameter consuming arguments on the command line.
 --   The source defines whether the arguments are positional:
+--
 -- > myprog posarg1 posarg2 ...
+--
 --   or are taken from a flag:
+--
 -- > myprog --myflag flagarg1 flagarg2 ...
+--
 --   or:
+--
 -- > myprog -m flagarg1 flagarg2 ...
 --
 --   One can provide two signatures of parsing function:
--- > @String -> a@ means that the parameter expect exactly one arg 
--- > @[String] -> a@ means that the parameter expect any number of args 
-data StdArgParam argformat a =  StdArgParam
-  (Optionality a)  -- ^ optionality
-  ArgSrc           -- ^ source
-  String           -- ^ key
-  (argformat -> a) -- ^ parsing function
+--
+-- @String -> a@ means that the parameter expect exactly one arg 
+--
+-- @[String] -> a@ means that the parameter expect any number of args 
+data StdArgParam argformat a =
+  StdArgParam (Optionality a) ArgSrc Key (argformat -> a)
 
 instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
   getparser (StdArgParam opt src key parse) = Parser rawparse where

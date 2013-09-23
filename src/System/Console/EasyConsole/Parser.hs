@@ -1,6 +1,5 @@
 {- |
 Module      :  $Header$
-Description :  parser functions
 Copyright   :  (c) Simon Bergot
 License     :  BSD3
 
@@ -26,12 +25,16 @@ class ParamSpec spec where
   getparser :: spec res -> Parser res
   getParamDescr :: spec res -> ParamDescr
 
+-- | Converts any "ParamSpec" to a "ParserSpec" 
 liftParam :: ParamSpec spec => spec res -> ParserSpec res
 liftParam param = ParserSpec
   [getParamDescr param]
   $ getparser param
 
 infixl 1 `andby`
+-- | Build a parser from a parser and a ParamSpec
+--
+-- > MyApp `parsedby` myparamspec `andby` myotherparamspec
 andby
   :: ParamSpec spec
   => ParserSpec (a -> b)
@@ -40,6 +43,9 @@ andby
 andby parser param = parser <*> liftParam param
 
 infixl 1 `parsedby`
+-- | Build a parser from a type constructor and a ParamSpec
+--
+-- > MyApp `parsedby` myparamspec
 parsedby
   :: ParamSpec spec
   => (a -> b)
