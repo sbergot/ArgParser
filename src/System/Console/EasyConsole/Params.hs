@@ -1,6 +1,18 @@
 {-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
+{- |
+Module      :  $Header$
+Copyright   :  (c) Simon Bergot
+License     :  BSD3
+
+Maintainer  :  simon.bergot@gmail.com
+Stability   :  unstable
+Portability :  portable
+
+Parameters are basic building blocks of a command line parser.
+-}
+
 module System.Console.EasyConsole.Params
   ( FlagParam (..)
   , Descr (..)

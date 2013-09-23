@@ -1,3 +1,15 @@
+{- |
+Module      :  $Header$
+Copyright   :  (c) Simon Bergot
+License     :  BSD3
+
+Maintainer  :  simon.bergot@gmail.com
+Stability   :  unstable
+Portability :  portable
+
+Preprocess args from a list of words to a pair containing positional args/flag arguments.
+-}
+
 module System.Console.EasyConsole.ArgsProcess (preprocess) where
 
 import           Data.List
