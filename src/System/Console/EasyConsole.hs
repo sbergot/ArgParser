@@ -1,7 +1,18 @@
+{- |
+Module      :  $Header$
+Copyright   :  (c) Simon Bergot
+License     :  BSD3
+
+Maintainer  :  simon.bergot@gmail.com
+Stability   :  unstable
+Portability :  portable
+
+Simple command line parsing library.
+-}
+
 module System.Console.EasyConsole (
-    module System.Console.EasyConsole.BaseType
   -- * Creating a parser
-  , mkApp
+    mkApp
   , mkSubParser
   , runApp
   , parsedBy
@@ -14,6 +25,8 @@ module System.Console.EasyConsole (
   -- ** Positional parameters
   , reqPos
   , optPos
+  -- * Base types
+  , module System.Console.EasyConsole.BaseType
   ) where
 import           System.Console.EasyConsole.BaseType
 import           System.Console.EasyConsole.Parser      (andBy, parsedBy)

@@ -2,9 +2,9 @@ name:           EasyConsole
 version:        0.1.5
 cabal-version:  >= 1.6
 build-type:     Simple
-author:         sberg
+author:         Simon Bergot <simon.bergot@gmail.com>
 stability:      unstable
-maintainer:     simon.bergot@gmail.com
+maintainer:     Simon Bergot <simon.bergot@gmail.com>
 license:        BSD3
 category:       Console
 synopsis:       Command line parsing framework for console applications
