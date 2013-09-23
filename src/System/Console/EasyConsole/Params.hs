@@ -52,9 +52,8 @@ takeFlag key flags = (args, rest) where
 --   The parsing function will be passed True
 --   if the flag is present, if the flag is provided to
 --   the command line, and False otherwise.
---   For a key \"foo\", the flag can either be \"--foo\" or \"-f\"
+--   For a key @foo@, the flag can either be @--foo@ or @-f@
 data FlagParam a =
-  -- | Usage: @FlagParam "mykey" myfunc@
   FlagParam Key (Bool -> a)
 
 flagformat :: String -> String
@@ -124,19 +123,19 @@ instance ParserArg Args where
 --
 -- > myprog posarg1 posarg2 ...
 --
---   or are taken from a flag:
+--   ... or are taken from a flag:
 --
 -- > myprog --myflag flagarg1 flagarg2 ...
 --
---   or:
+--   short form:
 --
 -- > myprog -m flagarg1 flagarg2 ...
 --
 --   One can provide two signatures of parsing function:
 --
--- @String -> a@ means that the parameter expect exactly one arg 
+--   * @String -> a@ means that the parameter expect exactly one arg 
 --
--- @[String] -> a@ means that the parameter expect any number of args 
+--   * @[String] -> a@ means that the parameter expect any number of args 
 data StdArgParam argformat a =
   StdArgParam (Optionality a) ArgSrc Key (argformat -> a)
 
