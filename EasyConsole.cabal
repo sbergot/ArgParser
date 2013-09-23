@@ -1,6 +1,6 @@
 name:           EasyConsole
 version:        0.1.5
-cabal-version:  >= 1.6
+cabal-version:  >=1.8
 build-type:     Simple
 author:         Simon Bergot <simon.bergot@gmail.com>
 stability:      unstable
@@ -30,5 +30,16 @@ library
                     System.Console.EasyConsole.SubParser
 
 source-repository head
-  type:     git
-  location: https://github.com/sbergot/EasyConsole 
+  type:      git
+  location:  https://github.com/sbergot/EasyConsole
+
+test-suite Tests
+  type:            exitcode-stdio-1.0
+  main-is:         Tests.hs
+  ghc-options:     -Wall -rtsopts
+  build-depends:   
+                  base >= 4, HTF > 0.9,
+                  EasyConsole
+  other-modules:   System.Console.EasyConsoleTest
+  hs-source-dirs:  tests
+
