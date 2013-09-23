@@ -21,7 +21,5 @@ import           System.Console.EasyConsole.QuickParams
 import           System.Console.EasyConsole.Run         (mkApp, runApp)
 import           System.Console.EasyConsole.SubParser   (mkSubParser)
 
--- TODO documentation
+-- TODO documentation of the top level module
 -- TODO rename to ArgParser
--- TODO add params shortcuts
--- TODO improve top-level export & exposed modules
