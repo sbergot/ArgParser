@@ -33,16 +33,14 @@ runParser (Parser parse) args = fst $ parse args
 
 -- | Runs a command line application with the
 --   user provided arguments. If the parsing succeeds,
---   run the application. Print the returned message otherwise 
+--   run the application. Print the returned message otherwise
 runApp
   :: CmdLineApp a -- ^ Command line spec
   -> (a -> IO ()) -- ^ Process to run if the parsing success
   -> IO ()
 runApp appspec appfun = do
   args <- getArgs
-  case parseArgs (preprocess args) appspec of
-    Left msg -> putStrLn msg
-    Right val -> appfun val
+  either putStrLn appfun $ parseArgs (preprocess args) appspec
 
 -- | Parse the arguments with the parser
 --   provided to the function.
@@ -50,11 +48,12 @@ parseArgs
   :: NiceArgs     -- ^ Arguments to parse
   -> CmdLineApp a -- ^ Command line spec
   -> ParseResult a
-parseArgs niceargs appspec = fromMaybe normalprocess specialprocess where
-  parser = parserfun $ cmdargparser appspec
+parseArgs niceargs appspec = fromMaybe normalprocess specialprocess
+ where
+  parser = getParserFun $ cmdArgParser appspec
   normalprocess = runParser parser niceargs
   specialprocess = runSpecialFlags appspec niceargs
-  
+
 
 runSpecialFlags :: CmdLineApp a -> NiceArgs -> Maybe (ParseResult a)
 runSpecialFlags app args = loop $ specialFlags app where
@@ -65,7 +64,7 @@ runSpecialFlags app args = loop $ specialFlags app where
     Right True -> Just $ action app args
     _          -> loop other
    where
-    specialParseResult = runParser (parserfun parse) args
+    specialParseResult = runParser (getParserFun parse) args
 
 -- | default version and help special actions
 defaultSpecialFlags :: [SpecialFlag a]
@@ -75,8 +74,7 @@ defaultSpecialFlags =
   ] where
   flagparser key = liftParam $ FlagParam key id
   -- ignore args and show the result
-  showParser action = newaction where
-    newaction app _  = Left $ action app
+  showParser action = const . Left . action
 
 -- | Build an application with no version/description
 --   and with a name equal to the file name.

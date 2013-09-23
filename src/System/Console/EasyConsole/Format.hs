@@ -19,8 +19,8 @@ defaultFormat = CmdLineFormat 15 1
 
 showCmdLineVersion :: CmdLineApp a -> String
 showCmdLineVersion app =  appName ++ appVersion where
-  appName = appname app
-  appVersion = fromMaybe "" $ appversion app
+  appName = getAppName app
+  appVersion = fromMaybe "" $ getAppVersion app
 
 showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
 showCmdLineAppUsage fmt app = unlines
@@ -30,8 +30,8 @@ showCmdLineAppUsage fmt app = unlines
   , appParams
   ]
  where
-  appDescr = fromMaybe "" $ appdescr app
-  paramdescrs = parserparams $ cmdargparser app
+  appDescr = fromMaybe "" $ getAppDescr app
+  paramdescrs = getParserParams $ cmdArgParser app
   appParams = formatParamDescrs fmt paramdescrs
   appUsage = "usage : " ++ usage
   usage = unwords $ map argUsage paramdescrs

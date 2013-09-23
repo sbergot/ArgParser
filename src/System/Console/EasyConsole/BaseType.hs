@@ -45,12 +45,12 @@ data Parser a = Parser (NiceArgs -> (ParseResult a, NiceArgs))
 
 -- | Represent a full parameter spec
 data ParserSpec a = ParserSpec
-  { parserparams :: [ParamDescr]
-  , parserfun    :: Parser a
+  { getParserParams :: [ParamDescr]
+  , getParserFun    :: Parser a
   }
 
 instance Functor ParserSpec where
-  fmap f p = p {parserfun = fmap f $ parserfun p}
+  fmap f p = p {getParserFun = fmap f $ getParserFun p}
 
 instance Applicative ParserSpec where
   pure val = ParserSpec [] $ pure val
@@ -59,8 +59,7 @@ instance Applicative ParserSpec where
 
 -- | A special action with more possibilities.
 --   The full arg list will be provided, 
---   with the command line spec itself,
---   and the application process.
+--   with the command line spec itself.
 type SpecialAction a =
   CmdLineApp a
   -> NiceArgs
@@ -73,12 +72,12 @@ type SpecialFlag a = (ParserSpec Bool, SpecialAction a)
 
 -- | A command line application, with a parser and a description
 data CmdLineApp a = CmdLineApp
-  { cmdargparser :: ParserSpec a    -- ^ The argument parser
-  , specialFlags :: [SpecialFlag a] -- ^ The special flags
-  , appname      :: String          -- ^ The application name.
-                                    --   Usally the binary name.
-  , appversion   :: Maybe String    -- ^ Optional application version
-  , appdescr     :: Maybe String    -- ^ Optional description
+  { cmdArgParser  :: ParserSpec a    -- ^ The argument parser
+  , specialFlags  :: [SpecialFlag a] -- ^ The special flags
+  , getAppName    :: String          -- ^ The application name.
+                                  --   Usally the binary name.
+  , getAppVersion :: Maybe String    -- ^ Optional application version
+  , getAppDescr   :: Maybe String    -- ^ Optional description
   }
 
 instance Functor Parser where
