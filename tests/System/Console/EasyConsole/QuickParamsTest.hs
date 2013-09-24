@@ -11,14 +11,19 @@ import Test.HUnit
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 
-quickRun
+paramRun
   :: ParamSpec spec
   => spec a
   -> [String]
   -> ParseResult a
-quickRun param args = parseArgs args $
+paramRun param args = parseArgs args $
   mkDefaultApp (liftParam param) "test"
 
 test_flagparser :: Assertion
-test_flagparser = assertEqual (Right True) $
-  quickRun (boolFlag "test") ["--test"]
+test_flagparser = do
+  let parser = paramRun (boolFlag "test")
+  assertEqual (Right True) $ parser ["--test"]
+  assertEqual (Right True) $ parser ["--te"]
+  assertEqual (Right True) $ parser ["-t"]
+  assertEqual (Right False) $ parser ["-b"]
+  assertEqual (Right False) $ parser ["test"]
