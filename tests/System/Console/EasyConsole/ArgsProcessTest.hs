@@ -1,10 +1,10 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 module System.Console.EasyConsole.ArgsProcessTest where
 
+import           Data.Map                               as M
 import           System.Console.EasyConsole.ArgsProcess
-import Data.Map as M
 import           Test.Framework
-import Test.HUnit
+import           Test.HUnit
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 

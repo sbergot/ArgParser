@@ -14,8 +14,10 @@ module System.Console.EasyConsole.Run (
   -- * Running a parser
     runApp
   , parseArgs
+  , parseNiceArgs
   -- * Building a parser
   , mkApp
+  , mkDefaultApp
   , defaultSpecialFlags
   ) where
 
@@ -40,20 +42,29 @@ runApp
   -> IO ()
 runApp appspec appfun = do
   args <- getArgs
-  either putStrLn appfun $ parseArgs (preprocess args) appspec
+  either putStrLn appfun $ parseArgs args appspec
 
 -- | Parse the arguments with the parser
 --   provided to the function.
 parseArgs
+  :: Args     -- ^ Arguments to parse
+  -> CmdLineApp a -- ^ Command line spec
+  -> ParseResult a
+parseArgs args = parseNiceArgs niceargs
+ where
+  niceargs = preprocess args
+
+-- | Parse the arguments with the parser
+--   provided to the function.
+parseNiceArgs
   :: NiceArgs     -- ^ Arguments to parse
   -> CmdLineApp a -- ^ Command line spec
   -> ParseResult a
-parseArgs niceargs appspec = fromMaybe normalprocess specialprocess
+parseNiceArgs niceargs appspec = fromMaybe normalprocess specialprocess
  where
   parser = getParserFun $ cmdArgParser appspec
   normalprocess = runParser parser niceargs
   specialprocess = runSpecialFlags appspec niceargs
-
 
 runSpecialFlags :: CmdLineApp a -> NiceArgs -> Maybe (ParseResult a)
 runSpecialFlags app args = loop $ specialFlags app where
@@ -83,6 +94,8 @@ mkApp
   -> IO (CmdLineApp a)
 mkApp spec = liftM (mkDefaultApp spec) getProgName
 
+-- | Build an application with no version/description
+--   and with a name equal to the provided String.
 mkDefaultApp :: ParserSpec a -> String -> CmdLineApp a
 mkDefaultApp spec progName = CmdLineApp
     spec defaultSpecialFlags progName Nothing Nothing
