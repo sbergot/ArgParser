@@ -17,10 +17,10 @@ paramRun
   -> [String]
   -> ParseResult a
 paramRun param args = parseArgs args $
-  mkDefaultApp (liftParam param) "test"
+  mkDefaultApp (liftParam param) ""
 
-test_flagparser :: Assertion
-test_flagparser = do
+test_boolFlag :: Assertion
+test_boolFlag = do
   let parser = paramRun (boolFlag "test")
   assertEqual (Right True) $ parser ["--test"]
   assertEqual (Right True) $ parser ["--te"]
