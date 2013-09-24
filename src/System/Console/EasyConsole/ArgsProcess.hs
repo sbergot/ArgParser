@@ -23,12 +23,15 @@ preprocess args = (pos, flagArgs) where
   flagArgs = M.fromList $ unfoldr parseFlag rest
 
 data TokenType = Flag | Pos
+  deriving (Show)
 data Token = Token TokenType Arg
+  deriving (Show)
+
 
 isPos :: Token -> Bool
 isPos (Token tokenType _) = case tokenType of
-  Flag -> True
-  _    -> False
+  Pos -> True
+  _   -> False
 
 getWord :: Token -> Arg
 getWord (Token _ word) = word

@@ -33,13 +33,28 @@ source-repository head
   type:      git
   location:  https://github.com/sbergot/EasyConsole
 
-test-suite Tests
+test-suite TestsHTF
   type:            exitcode-stdio-1.0
-  main-is:         Tests.hs
+  main-is:         TestsHTF.hs
   ghc-options:     -Wall -rtsopts
   build-depends:   
-                  base >= 4, HTF > 0.9,
-                  EasyConsole
-  other-modules:   System.Console.EasyConsoleTest
-  hs-source-dirs:  tests
+                  base >= 4,
+                  HTF > 0.9,
+                  EasyConsole,
+                  containers,
+                  HUnit
+  other-modules:   
+                  System.Console.EasyConsole.RunTest,
+                  System.Console.EasyConsole.Format,
+                  System.Console.EasyConsole.FormatTest,
+                  System.Console.EasyConsoleTest,
+                  System.Console.EasyConsole.SubParserTest,
+                  System.Console.EasyConsole.QuickParams,
+                  System.Console.EasyConsole.QuickParamsTest,
+                  System.Console.EasyConsole.ParserTest,
+                  System.Console.EasyConsole.ArgsProcess,
+                  System.Console.EasyConsole.ArgsProcessTest
+  hs-source-dirs:  
+                  tests,
+                  src
 
