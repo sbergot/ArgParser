@@ -19,10 +19,11 @@ paramRun
 paramRun param args = parseArgs args $
   mkDefaultApp (liftParam param) ""
 
-assertFail :: ParseResult a -> Assertion
+assertFail :: Show a => ParseResult a -> Assertion
 assertFail res = case res  of
-  Left _ -> return ()
-  _      -> assertFailure "expected parsing to fail."
+  Left _    -> return ()
+  Right val -> assertFailure $
+    "expected parsing to fail but got " ++ show val
 
 assertSuccess
   :: (Show a, Eq a)
@@ -42,15 +43,53 @@ test_boolFlag = do
   assertSuccess False $ parser []
   assertFail $ parser ["-t", "arg"]
 
-intParser :: [String] -> ParseResult Int
-intParser = paramRun $ reqPos "test"
+intReqParser :: [String] -> ParseResult Int
+intReqParser = paramRun $ reqPos "test"
 
 prop_reqPosSuccess :: Positive Int -> Bool
 prop_reqPosSuccess (Positive i) = Right i == parsed where
-  parsed = intParser [show i]
+  parsed = intReqParser [show i]
  
 test_reqPosFailure :: Assertion
 test_reqPosFailure = do
-  assertFail $ intParser ["--test"]
-  assertFail $ intParser ["foo"]
-  assertFail $ intParser []
+  assertFail $ intReqParser ["--test"]
+  assertFail $ intReqParser ["foo"]
+  assertFail $ intReqParser []
+
+intOptParser :: [String] -> ParseResult Int
+intOptParser = paramRun $ optPos 0 "test"
+
+prop_optPosSuccess :: Positive Int -> Bool
+prop_optPosSuccess (Positive i) = Right i == parsed where
+  parsed = intOptParser [show i]
+ 
+test_optPosFailure :: Assertion
+test_optPosFailure = do
+  assertFail $ intOptParser ["foo"]
+  assertSuccess 0 $ intOptParser []
+
+intReqFlagParser :: [String] -> ParseResult Int
+intReqFlagParser = paramRun $ reqFlag "test"
+
+prop_reqFlagSuccess :: Positive Int -> Bool
+prop_reqFlagSuccess (Positive i) = Right i == parsed where
+  parsed = intReqFlagParser ["-t", show i]
+ 
+test_reqFlagFailure :: Assertion
+test_reqFlagFailure = do
+  assertFail $ intReqFlagParser ["--test"]
+  assertFail $ intReqFlagParser ["--test", "foo"]
+  assertFail $ intReqFlagParser []
+
+intOptFlagParser :: [String] -> ParseResult Int
+intOptFlagParser = paramRun $ optFlag 0 "test"
+
+prop_optFlagSuccess :: Positive Int -> Bool
+prop_optFlagSuccess (Positive i) = Right i == parsed where
+  parsed = intOptFlagParser ["-t", show i]
+ 
+test_optFlagFailure :: Assertion
+test_optFlagFailure = do
+  assertFail $ intOptFlagParser ["--test"]
+  assertFail $ intOptFlagParser ["--test", "foo"]
+  assertSuccess 0 $ intOptFlagParser []
