@@ -51,6 +51,6 @@ mkSpecialFlag :: (Arg, CmdLineApp a) -> SpecialFlag a
 mkSpecialFlag (arg, subapp) = (parser, action) where
   parser = commandParser $ Right . (== arg)
   action _ (posargs, flagargs) =
-    parseArgs (drop 1 posargs, flagargs) subapp
+    parseNiceArgs (drop 1 posargs, flagargs) subapp
 
 
