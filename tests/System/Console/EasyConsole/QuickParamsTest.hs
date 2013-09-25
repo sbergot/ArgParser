@@ -49,8 +49,8 @@ prop_reqPosSuccess :: Positive Int -> Bool
 prop_reqPosSuccess (Positive i) = Right i == parsed where
   parsed = intParser [show i]
  
-test_reqPos :: Assertion
-test_reqPos = do
+test_reqPosFailure :: Assertion
+test_reqPosFailure = do
   assertFail $ intParser ["--test"]
   assertFail $ intParser ["foo"]
   assertFail $ intParser []
