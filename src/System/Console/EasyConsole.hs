@@ -44,3 +44,5 @@ import           System.Console.EasyConsole.SubParser   (mkSubParser)
 
 -- TODO documentation of the top level module
 -- TODO rename to ArgParser
+-- TODO add tests
+-- TODO factor test helpers
