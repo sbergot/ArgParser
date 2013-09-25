@@ -44,12 +44,12 @@ mkSubParserWithName name parsers = CmdLineApp
   cmdSpecialFlags = commands ++ defaultSpecialFlags
   commands = map mkSpecialFlag parsers
 
-commandParser :: (Arg -> a) -> ParserSpec a
+commandParser :: (Arg -> ParseResult a) -> ParserSpec a
 commandParser = liftParam . StdArgParam Mandatory Pos "command"
 
 mkSpecialFlag :: (Arg, CmdLineApp a) -> SpecialFlag a
 mkSpecialFlag (arg, subapp) = (parser, action) where
-  parser = commandParser (== arg)
+  parser = commandParser $ Right . (== arg)
   action _ (posargs, flagargs) =
     parseArgs (drop 1 posargs, flagargs) subapp
 

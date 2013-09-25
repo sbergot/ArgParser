@@ -21,7 +21,19 @@ module System.Console.EasyConsole.QuickParams (
   , optPos 
   ) where
 
+import System.Console.EasyConsole.BaseType
 import System.Console.EasyConsole.Params
+import Text.Read (readMaybe)
+
+readArg
+  :: Read a
+  => Key
+  -> Arg
+  -> ParseResult a
+readArg key arg = case readMaybe arg of
+  Just val -> Right val
+  Nothing -> Left $ "Could not parse parameter " ++ key
+
 
 -- | A simple command line flag.
 --   The parsing function will return True
@@ -35,30 +47,30 @@ boolFlag key = FlagParam key id
 
 -- | A mandatory positional argument parameter
 reqPos
-  :: Key         -- ^ Param name
-  -> (argf -> a) -- ^ Conversion function
-  -> StdArgParam argf a
-reqPos = StdArgParam Mandatory Pos
+  :: Read a
+  => Key         -- ^ Param name
+  -> StdArgParam Arg a
+reqPos key = StdArgParam Mandatory Pos key (readArg key)
 
 -- | An optional positional argument parameter
 optPos
-  :: a                  -- ^ Default value
+  :: Read a
+  => a                  -- ^ Default value
   -> Key                -- ^ Param name
-  -> (argf -> a)        -- ^ Conversion function
-  -> StdArgParam argf a
-optPos val = StdArgParam (Optional val) Pos
+  -> StdArgParam Arg a
+optPos val key = StdArgParam (Optional val) Pos key (readArg key)
 
 -- | A mandatory flag argument parameter
 reqFlag
-  :: Key         -- ^ Flag name
-  -> (argf -> a) -- ^ Conversion function
-  -> StdArgParam argf a
-reqFlag = StdArgParam Mandatory Flag
+  :: Read a
+  => Key         -- ^ Flag name
+  -> StdArgParam Arg a
+reqFlag key = StdArgParam Mandatory Flag key (readArg key)
 
 -- | An optional flag argument parameter
 optFlag
-  :: a                  -- ^ Default value
+  :: Read a
+  => a                  -- ^ Default value
   -> Key                -- ^ Flag name
-  -> (argf -> a)        -- ^ Conversion function
-  -> StdArgParam argf a
-optFlag val = StdArgParam (Optional val) Flag
+  -> StdArgParam Arg a
+optFlag val key = StdArgParam (Optional val) Flag key (readArg key)

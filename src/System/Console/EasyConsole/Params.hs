@@ -97,25 +97,25 @@ data ArgSrc = Flag | Pos
 data Optionality a = Mandatory | Optional a
 
 class ParserArg argformat where
-  runflagparse :: (argformat -> res) -> Args -> ParseResult res
-  runposparse :: (argformat -> res) -> Args -> (ParseResult res, Args)
-  getvalformat :: (argformat -> res) -> String
+  runflagparse :: (argformat -> ParseResult res) -> Args -> ParseResult res
+  runposparse :: (argformat -> ParseResult res) -> Args -> (ParseResult res, Args)
+  getvalformat :: (argformat -> ParseResult res) -> String
 
 instance ParserArg Arg where
   runflagparse parser args = case args of
     []    -> Left "missing arg"
-    [val] -> Right $ parser val
+    [val] -> parser val
     _     -> Left "too many args"
 
   runposparse parser args = case args of
    []       -> (Left "missing arg", [])
-   val:rest -> (Right $ parser val, rest)
+   val:rest -> (parser val, rest)
 
   getvalformat _ = "VAL"
 
 instance ParserArg Args where
-  runflagparse parser vals = Right $ parser vals
-  runposparse  parser vals = (Right $ parser vals, [])
+  runflagparse parser = parser
+  runposparse  parser vals = (parser vals, [])
   getvalformat _ = "VAL [VALS ...]"
 
 -- | Defines a parameter consuming arguments on the command line.
@@ -137,7 +137,7 @@ instance ParserArg Args where
 --
 --   * @[String] -> a@ means that the parameter expect any number of args 
 data StdArgParam argformat a =
-  StdArgParam (Optionality a) ArgSrc Key (argformat -> a)
+  StdArgParam (Optionality a) ArgSrc Key (argformat -> ParseResult a)
 
 instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
   getParser (StdArgParam opt src key parse) = Parser rawparse where
