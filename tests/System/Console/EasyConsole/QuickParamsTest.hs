@@ -34,6 +34,14 @@ assertSuccess val res = case res  of
   Left _       -> assertFailure "parsing failed"
   Right resval -> assertEqual val resval
 
+getSuccessProp
+  :: ([String] -> ParseResult Int)
+  -> (Int -> [String])
+  -> Positive Int
+  -> Bool
+getSuccessProp parser repr = prop where
+  prop (Positive i) = (Right i ==) $ parser $ repr i
+
 test_boolFlag :: Assertion
 test_boolFlag = do
   let parser = paramRun (boolFlag "test")
@@ -47,8 +55,7 @@ intReqParser :: [String] -> ParseResult Int
 intReqParser = paramRun $ reqPos "test"
 
 prop_reqPosSuccess :: Positive Int -> Bool
-prop_reqPosSuccess (Positive i) = Right i == parsed where
-  parsed = intReqParser [show i]
+prop_reqPosSuccess = getSuccessProp intReqParser (\i -> [show i])
  
 test_reqPosFailure :: Assertion
 test_reqPosFailure = do
@@ -60,8 +67,7 @@ intOptParser :: [String] -> ParseResult Int
 intOptParser = paramRun $ optPos 0 "test"
 
 prop_optPosSuccess :: Positive Int -> Bool
-prop_optPosSuccess (Positive i) = Right i == parsed where
-  parsed = intOptParser [show i]
+prop_optPosSuccess = getSuccessProp intOptParser (\i -> [show i])
  
 test_optPosFailure :: Assertion
 test_optPosFailure = do
@@ -72,8 +78,7 @@ intReqFlagParser :: [String] -> ParseResult Int
 intReqFlagParser = paramRun $ reqFlag "test"
 
 prop_reqFlagSuccess :: Positive Int -> Bool
-prop_reqFlagSuccess (Positive i) = Right i == parsed where
-  parsed = intReqFlagParser ["-t", show i]
+prop_reqFlagSuccess = getSuccessProp intReqFlagParser (\i -> ["-t", show i])
  
 test_reqFlagFailure :: Assertion
 test_reqFlagFailure = do
@@ -85,8 +90,7 @@ intOptFlagParser :: [String] -> ParseResult Int
 intOptFlagParser = paramRun $ optFlag 0 "test"
 
 prop_optFlagSuccess :: Positive Int -> Bool
-prop_optFlagSuccess (Positive i) = Right i == parsed where
-  parsed = intOptFlagParser ["-t", show i]
+prop_optFlagSuccess = getSuccessProp intOptFlagParser (\i -> ["-t", show i])
  
 test_optFlagFailure :: Assertion
 test_optFlagFailure = do
