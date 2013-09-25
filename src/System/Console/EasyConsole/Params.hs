@@ -62,10 +62,12 @@ flagformat key = "-" ++ first ++ ", --" ++ key where
 
 instance ParamSpec FlagParam where
   getParser (FlagParam key parse) = Parser rawparse where
-    rawparse (pos, flags) =
-      (Right $ parse found, (pos, rest)) where
-        (args, rest) = takeFlag key flags
-        found = isJust args
+    rawparse (pos, flags) = case args of
+      Just [] -> (Right $ parse True, (pos, rest))
+      Just _  -> (Left "unexpected parameter(s)", (pos, rest))
+      Nothing -> (Right $ parse False, (pos, rest))
+     where
+      (args, rest) = takeFlag key flags
   getParamDescr (FlagParam key _) = ParamDescr
     ("[--" ++ key ++ "]")
     "optional arguments"

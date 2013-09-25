@@ -19,11 +19,38 @@ paramRun
 paramRun param args = parseArgs args $
   mkDefaultApp (liftParam param) ""
 
+assertFail :: ParseResult a -> Assertion
+assertFail res = case res  of
+  Left _ -> return ()
+  _      -> assertFailure "expected parsing to fail."
+
+assertSuccess
+  :: (Show a, Eq a)
+  => a
+  -> ParseResult a
+  -> Assertion
+assertSuccess val res = case res  of
+  Left _       -> assertFailure "parsing failed"
+  Right resval -> assertEqual val resval
+
 test_boolFlag :: Assertion
 test_boolFlag = do
   let parser = paramRun (boolFlag "test")
-  assertEqual (Right True) $ parser ["--test"]
-  assertEqual (Right True) $ parser ["--te"]
-  assertEqual (Right True) $ parser ["-t"]
-  assertEqual (Right False) $ parser ["-b"]
-  assertEqual (Right False) $ parser ["test"]
+  assertSuccess True $ parser ["--test"]
+  assertSuccess True $ parser ["--te"]
+  assertSuccess True $ parser ["-t"]
+  assertSuccess False $ parser []
+  assertFail $ parser ["-t", "arg"]
+
+intParser :: [String] -> ParseResult Int
+intParser = paramRun $ reqPos "test"
+
+prop_reqPosSuccess :: Positive Int -> Bool
+prop_reqPosSuccess (Positive i) = Right i == parsed where
+  parsed = intParser [show i]
+ 
+test_reqPos :: Assertion
+test_reqPos = do
+  assertFail $ intParser ["--test"]
+  assertFail $ intParser ["foo"]
+  assertFail $ intParser []
