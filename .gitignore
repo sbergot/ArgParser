@@ -1,3 +1,4 @@
 .dist-buildwrapper
 dist
 *~
+/TestsHTF.exe.tix
