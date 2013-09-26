@@ -19,6 +19,13 @@ library
   ghc-options:      -Wall
   exposed-modules:  
                     System.Console.ArgParser,
+                    System.Console.ArgParser.ArgsProcess,
+                    System.Console.ArgParser.BaseType,
+                    System.Console.ArgParser.Format,
+                    System.Console.ArgParser.Params,
+                    System.Console.ArgParser.Parser,
+                    System.Console.ArgParser.QuickParams,
+                    System.Console.ArgParser.Run,
                     System.Console.ArgParser.SubParser
 
 source-repository head
