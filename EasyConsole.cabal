@@ -53,7 +53,8 @@ test-suite TestsHTF
                   System.Console.EasyConsole.QuickParamsTest,
                   System.Console.EasyConsole.ParserTest,
                   System.Console.EasyConsole.ArgsProcess,
-                  System.Console.EasyConsole.ArgsProcessTest
+                  System.Console.EasyConsole.ArgsProcessTest,
+                  System.Console.EasyConsole.TestHelpers
   hs-source-dirs:  
                   tests,
                   src

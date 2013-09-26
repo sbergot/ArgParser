@@ -19,20 +19,22 @@ module System.Console.EasyConsole (
   , andBy
   -- * Creating parameters
   -- | Values provided to 'parsedBy' and 'andBy' should be created with
-  --   the following functions. When providing a conversion function,
-  --   you may provide two kind of signatures:
-  --
-  --   * @String -> a@ means that the parameter expect exactly one arg 
-  --
-  --   * @[String] -> a@ means that the parameter expect any number of args 
-
-  -- ** Flag parameters
+  --   the following functions.
+  -- ** Parameters without args
   , boolFlag
+  -- ** Parameters with one arg
+  -- *** Flags
   , reqFlag
   , optFlag
-  -- ** Positional parameters
+  -- *** Positional
   , reqPos
-  , optPos
+  , optPos 
+  -- ** Parameters with multiple args
+  -- *** Flags
+  , reqFlagArgs
+  , optFlagArgs
+  -- *** Positionnal
+  , posArgs
   -- * Base types
   , module System.Console.EasyConsole.BaseType
   ) where
@@ -45,4 +47,6 @@ import           System.Console.EasyConsole.SubParser   (mkSubParser)
 -- TODO documentation of the top level module
 -- TODO rename to ArgParser
 -- TODO add tests
--- TODO factor test helpers
+-- TODO run coverage analysis
+-- TODO improve QuickParams doc with failure/success cases
+-- TODO remove ParserArg class and use a sum type for multiple param handling 
