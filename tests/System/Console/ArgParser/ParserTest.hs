@@ -7,7 +7,6 @@ import System.Console.ArgParser.QuickParams
 import System.Console.ArgParser.TestHelpers
 
 import Test.Framework
-import Test.HUnit
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 
@@ -19,7 +18,9 @@ myTestParser = MyTest
   `parsedBy` reqPos "pos1"
   `andBy` reqPos "pos2"
 
-test_parse :: Assertion
-test_parse = do
-  assertSuccess (MyTest 1 1) $ specRun myTestParser ["1", "1"]
-  assertSuccess (MyTest 2 2) $ specRun myTestParser ["2", "2"]
+prop_parse
+  :: Positive Int
+  -> Positive Int
+  -> Bool
+prop_parse (Positive i) (Positive j) =
+  Right (MyTest i j) == specRun myTestParser [show i, show j]

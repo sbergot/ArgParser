@@ -89,6 +89,6 @@ instance Applicative Parser where
   pure val = Parser parser where
     parser args = (Right val, args)
   (Parser f) <*> (Parser g) = Parser (\args ->
-    let (res, newargs) = g args
-        (h, lastargs) = f newargs
+    let (h, newargs) = f args
+        (res, lastargs) = g newargs
     in (h <*> res, lastargs))
