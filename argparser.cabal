@@ -39,9 +39,9 @@ test-suite TestsHTF
   build-depends:   
                   base >= 4,
                   HTF > 0.9,
-                  EasyConsole,
                   containers,
-                  HUnit
+                  HUnit,
+                  argparser
   other-modules:   
                    System.Console.ArgParser.ArgsProcessTest,
                    System.Console.ArgParser.FormatTest,

@@ -20,7 +20,8 @@ import           System.Console.ArgParser.BaseType
 preprocess :: Args -> NiceArgs
 preprocess args = (pos, flagArgs) where
   (pos, rest) =  collectPos $ tokenize args
-  flagArgs = M.fromList $ unfoldr parseFlag rest
+  flagArgs :: Flags
+  flagArgs = M.fromListWith (flip (++)) $ unfoldr parseFlag rest
 
 data TokenType = Flag | Pos
 data Token = Token TokenType Arg

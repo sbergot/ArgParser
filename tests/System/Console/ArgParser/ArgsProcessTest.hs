@@ -44,3 +44,8 @@ test_mix :: Assertion
 test_mix =
   assertEqual (["bar"], M.fromList [("b", ["7", "8"])]) $
   preprocess ["bar", "-b", "7", "8"]
+
+test_repeatFlag :: Assertion
+test_repeatFlag =
+  assertEqual ([], M.fromList [("b", ["7", "8", "11", "12"])]) $
+  preprocess ["-b", "7", "-b", "8", "-b", "11", "12"]

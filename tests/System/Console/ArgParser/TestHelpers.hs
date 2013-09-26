@@ -29,7 +29,7 @@ assertFail :: Show a => ParseResult a -> Assertion
 assertFail res = case res  of
   Left _    -> return ()
   Right val -> assertFailure $
-    "expected parsing to fail but got " ++ show val
+    "\nexpected parsing to fail but got " ++ show val
 
 assertSuccess
   :: (Show a, Eq a)
@@ -37,13 +37,24 @@ assertSuccess
   -> ParseResult a
   -> Assertion
 assertSuccess val res = case res  of
-  Left _       -> assertFailure "parsing failed"
+  Left msg     -> assertFailure $ "\nparsing failed: " ++ msg
   Right resval -> assertEqual val resval
 
-getSuccessProp
+getIntSuccessProp
   :: ([String] -> ParseResult Int)
   -> (Int -> [String])
   -> Positive Int
   -> Bool
-getSuccessProp parser repr = prop where
+getIntSuccessProp parser repr = prop where
   prop (Positive i) = (Right i ==) $ parser $ repr i
+
+getIntSumSuccessProp
+  :: ([String] -> ParseResult Int)
+  -> [String]
+  -> NonEmptyList (Positive Int)
+  -> Bool
+getIntSumSuccessProp parser prefix = prop where
+  prop (NonEmpty positives) = (Right expected ==) $ parser args where
+    unpos (Positive i) = i
+    expected = sum $ map unpos positives
+    args = prefix ++ map (show . unpos) positives

@@ -160,9 +160,10 @@ instance ParamSpec StdArgParam where
         Nothing -> defaultOrError "missing flag"
         Just args -> runFlagParse parse args
 
-    posparse (pos, flags) = case pos of
-      [] -> (logkey key $ defaultOrError "missing arg", (pos, flags))
-      args -> let (res, rest) = runPosParse parse args
+    posparse (pos, flags) = case (pos, parse) of
+      ([], SingleArgParser _) ->
+        (logkey key $ defaultOrError "missing arg", (pos, flags))
+      (args, _) -> let (res, rest) = runPosParse parse args
               in  (res, (rest, flags))
 
     defaultOrError = missing opt

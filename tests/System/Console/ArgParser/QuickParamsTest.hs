@@ -22,7 +22,7 @@ intReqParser :: [String] -> ParseResult Int
 intReqParser = paramRun $ reqPos "test"
 
 prop_reqPosSuccess :: Positive Int -> Bool
-prop_reqPosSuccess = getSuccessProp intReqParser (\i -> [show i])
+prop_reqPosSuccess = getIntSuccessProp intReqParser (\i -> [show i])
  
 test_reqPosFailure :: Assertion
 test_reqPosFailure = do
@@ -34,7 +34,7 @@ intOptParser :: [String] -> ParseResult Int
 intOptParser = paramRun $ optPos 0 "test"
 
 prop_optPosSuccess :: Positive Int -> Bool
-prop_optPosSuccess = getSuccessProp intOptParser (\i -> [show i])
+prop_optPosSuccess = getIntSuccessProp intOptParser (\i -> [show i])
  
 test_optPosFailure :: Assertion
 test_optPosFailure = do
@@ -45,7 +45,7 @@ intReqFlagParser :: [String] -> ParseResult Int
 intReqFlagParser = paramRun $ reqFlag "test"
 
 prop_reqFlagSuccess :: Positive Int -> Bool
-prop_reqFlagSuccess = getSuccessProp intReqFlagParser (\i -> ["-t", show i])
+prop_reqFlagSuccess = getIntSuccessProp intReqFlagParser (\i -> ["-t", show i])
  
 test_reqFlagFailure :: Assertion
 test_reqFlagFailure = do
@@ -57,10 +57,48 @@ intOptFlagParser :: [String] -> ParseResult Int
 intOptFlagParser = paramRun $ optFlag 0 "test"
 
 prop_optFlagSuccess :: Positive Int -> Bool
-prop_optFlagSuccess = getSuccessProp intOptFlagParser (\i -> ["-t", show i])
+prop_optFlagSuccess = getIntSuccessProp intOptFlagParser (\i -> ["-t", show i])
  
 test_optFlagFailure :: Assertion
 test_optFlagFailure = do
   assertFail $ intOptFlagParser ["--test"]
   assertFail $ intOptFlagParser ["--test", "foo"]
   assertSuccess 0 $ intOptFlagParser []
+
+intOptArgsParser :: [String] -> ParseResult Int
+intOptArgsParser = paramRun $ posArgs "test" 0 (+)
+
+prop_optPosArgsSuccess :: NonEmptyList (Positive Int) -> Bool
+prop_optPosArgsSuccess = getIntSumSuccessProp intOptArgsParser []
+ 
+test_optPosArgsFailure :: Assertion
+test_optPosArgsFailure = do
+  assertFail $ intOptArgsParser ["foo"]
+  assertSuccess 0 $ intOptArgsParser []
+
+intReqFlagArgsParser :: [String] -> ParseResult Int
+intReqFlagArgsParser = paramRun $ reqFlagArgs "test" 0 (+)
+
+prop_reqFlagArgsSuccess :: NonEmptyList (Positive Int) -> Bool
+prop_reqFlagArgsSuccess =
+  getIntSumSuccessProp intReqFlagArgsParser ["-t"]
+ 
+test_reqFlagArgsFailure :: Assertion
+test_reqFlagArgsFailure = do
+  assertSuccess 0 $ intReqFlagArgsParser ["--test"]
+  assertFail $ intReqFlagArgsParser ["--test", "foo"]
+  assertFail $ intReqFlagArgsParser []
+
+intOptFlagArgsParser :: [String] -> ParseResult Int
+intOptFlagArgsParser = paramRun $ optFlagArgs 1 "test" 0 (+) 
+
+prop_optFlagArgsSuccess :: NonEmptyList (Positive Int) -> Bool
+prop_optFlagArgsSuccess =
+  getIntSumSuccessProp intOptFlagArgsParser ["-t"]
+ 
+test_optFlagArgsFailure :: Assertion
+test_optFlagArgsFailure = do
+  assertSuccess 0 $ intOptFlagArgsParser ["--test"]
+  assertFail $ intOptFlagArgsParser ["--test", "foo"]
+  assertSuccess 1 $ intOptFlagArgsParser []
+  assertSuccess 3 $ intOptFlagArgsParser ["-t", "1", "-t", "2"]
