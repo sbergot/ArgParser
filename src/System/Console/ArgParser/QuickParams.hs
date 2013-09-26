@@ -11,7 +11,7 @@ Collection of functions which are basically shortcuts
 of "System.Console.EasyConsole.Params" versions.
 -}
 
-module System.Console.EasyConsole.QuickParams (
+module System.Console.ArgParser.QuickParams (
   -- * Parameters without args
     boolFlag
   -- * Parameters with one arg
@@ -29,8 +29,8 @@ module System.Console.EasyConsole.QuickParams (
   , posArgs
   ) where
 
-import System.Console.EasyConsole.BaseType
-import System.Console.EasyConsole.Params
+import System.Console.ArgParser.BaseType
+import System.Console.ArgParser.Params
 import Text.Read (readMaybe)
 import Data.Either (partitionEithers)
 
@@ -59,31 +59,31 @@ boolFlag key = FlagParam key id
 reqPos
   :: Read a
   => Key         -- ^ Param name
-  -> StdArgParam Arg a
-reqPos key = StdArgParam Mandatory Pos key (readArg key)
+  -> StdArgParam a
+reqPos key = StdArgParam Mandatory Pos key (SingleArgParser $ readArg key)
 
 -- | An optional positional argument parameter
 optPos
   :: Read a
   => a                  -- ^ Default value
   -> Key                -- ^ Param name
-  -> StdArgParam Arg a
-optPos val key = StdArgParam (Optional val) Pos key (readArg key)
+  -> StdArgParam a
+optPos val key = StdArgParam (Optional val) Pos key (SingleArgParser $ readArg key)
 
 -- | A mandatory flag argument parameter
 reqFlag
   :: Read a
   => Key         -- ^ Flag name
-  -> StdArgParam Arg a
-reqFlag key = StdArgParam Mandatory Flag key (readArg key)
+  -> StdArgParam a
+reqFlag key = StdArgParam Mandatory Flag key (SingleArgParser $ readArg key)
 
 -- | An optional flag argument parameter
 optFlag
   :: Read a
   => a                  -- ^ Default value
   -> Key                -- ^ Flag name
-  -> StdArgParam Arg a
-optFlag val key = StdArgParam (Optional val) Flag key (readArg key)
+  -> StdArgParam a
+optFlag val key = StdArgParam (Optional val) Flag key (SingleArgParser $ readArg key)
 
 readArgs
   :: Read a
@@ -104,9 +104,9 @@ posArgs
   => Key                -- ^ Param name
   -> b                  -- ^ Initial value
   -> (b -> a -> b)      -- ^ Accumulation function
-  -> StdArgParam Args b
+  -> StdArgParam b
 posArgs key initval accum = StdArgParam
-  Mandatory Pos key (readArgs key initval accum)
+  Mandatory Pos key (MulipleArgParser $ readArgs key initval accum)
 
 -- | A mandatory flag argument parameter taking multiple arguments
 reqFlagArgs
@@ -114,9 +114,9 @@ reqFlagArgs
   => Key                -- ^ Flag name
   -> b                  -- ^ Initial value
   -> (b -> a -> b)      -- ^ Accumulation function
-  -> StdArgParam Args b
+  -> StdArgParam b
 reqFlagArgs key initval accum = StdArgParam
-  Mandatory Flag key (readArgs key initval accum)
+  Mandatory Flag key (MulipleArgParser $ readArgs key initval accum)
 
 -- | An optional flag argument parameter taking multiple arguments
 optFlagArgs
@@ -125,6 +125,6 @@ optFlagArgs
   -> Key                -- ^ Flag name
   -> b                  -- ^ Initial value
   -> (b -> a -> b)      -- ^ Accumulation function
-  -> StdArgParam Args b
+  -> StdArgParam b
 optFlagArgs val key initval accum = StdArgParam
-  (Optional val) Flag key (readArgs key initval accum)
+  (Optional val) Flag key (MulipleArgParser $ readArgs key initval accum)

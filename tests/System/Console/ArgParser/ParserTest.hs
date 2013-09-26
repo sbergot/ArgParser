@@ -1,10 +1,10 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-module System.Console.EasyConsole.ParserTest where
-import System.Console.EasyConsole.Parser
+module System.Console.ArgParser.ParserTest where
+import System.Console.ArgParser.Parser
 
-import System.Console.EasyConsole.BaseType
-import System.Console.EasyConsole.QuickParams
-import System.Console.EasyConsole.TestHelpers
+import System.Console.ArgParser.BaseType
+import System.Console.ArgParser.QuickParams
+import System.Console.ArgParser.TestHelpers
 
 import Test.Framework
 import Test.HUnit

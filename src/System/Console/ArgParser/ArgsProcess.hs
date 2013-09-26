@@ -10,11 +10,11 @@ Portability :  portable
 Preprocess args from a list of words to a pair containing positional args/flag arguments.
 -}
 
-module System.Console.EasyConsole.ArgsProcess (preprocess) where
+module System.Console.ArgParser.ArgsProcess (preprocess) where
 
 import           Data.List
 import qualified Data.Map                            as M
-import           System.Console.EasyConsole.BaseType
+import           System.Console.ArgParser.BaseType
 
 -- | Separate positional arguments from flag arguments
 preprocess :: Args -> NiceArgs
@@ -23,9 +23,7 @@ preprocess args = (pos, flagArgs) where
   flagArgs = M.fromList $ unfoldr parseFlag rest
 
 data TokenType = Flag | Pos
-  deriving (Show)
 data Token = Token TokenType Arg
-  deriving (Show)
 
 
 isPos :: Token -> Bool

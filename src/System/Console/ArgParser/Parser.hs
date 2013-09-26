@@ -10,7 +10,7 @@ Portability :  portable
 Functions used to specify a parser for command line arguments.
 -}
 
-module System.Console.EasyConsole.Parser
+module System.Console.ArgParser.Parser
   ( ParamSpec (..)
   , liftParam
   , parsedBy
@@ -18,7 +18,7 @@ module System.Console.EasyConsole.Parser
   ) where
 
 import           Control.Applicative
-import           System.Console.EasyConsole.BaseType
+import           System.Console.ArgParser.BaseType
 
 -- | interface allowing to define a basic block of a command line parser
 class ParamSpec spec where

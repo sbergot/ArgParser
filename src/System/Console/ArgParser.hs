@@ -10,7 +10,7 @@ Portability :  portable
 Simple command line parsing library.
 -}
 
-module System.Console.EasyConsole (
+module System.Console.ArgParser (
   -- * Creating a parser
     mkApp
   , mkSubParser
@@ -36,17 +36,15 @@ module System.Console.EasyConsole (
   -- *** Positionnal
   , posArgs
   -- * Base types
-  , module System.Console.EasyConsole.BaseType
+  , module System.Console.ArgParser.BaseType
   ) where
-import           System.Console.EasyConsole.BaseType
-import           System.Console.EasyConsole.Parser      (andBy, parsedBy)
-import           System.Console.EasyConsole.QuickParams
-import           System.Console.EasyConsole.Run         (mkApp, runApp)
-import           System.Console.EasyConsole.SubParser   (mkSubParser)
+import           System.Console.ArgParser.BaseType
+import           System.Console.ArgParser.Parser      (andBy, parsedBy)
+import           System.Console.ArgParser.QuickParams
+import           System.Console.ArgParser.Run         (mkApp, runApp)
+import           System.Console.ArgParser.SubParser   (mkSubParser)
 
 -- TODO documentation of the top level module
--- TODO rename to ArgParser
 -- TODO add tests
 -- TODO run coverage analysis
 -- TODO improve QuickParams doc with failure/success cases
--- TODO remove ParserArg class and use a sum type for multiple param handling 

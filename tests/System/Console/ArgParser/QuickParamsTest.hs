@@ -1,9 +1,9 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-module System.Console.EasyConsole.QuickParamsTest where
-import System.Console.EasyConsole.QuickParams
-import System.Console.EasyConsole.BaseType
+module System.Console.ArgParser.QuickParamsTest where
+import System.Console.ArgParser.QuickParams
+import System.Console.ArgParser.BaseType
 
-import System.Console.EasyConsole.TestHelpers
+import System.Console.ArgParser.TestHelpers
 import Test.Framework
 import Test.HUnit
 

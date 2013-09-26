@@ -10,7 +10,7 @@ Portability :  portable
 Functions used to build and run command line applications.
 -}
 
-module System.Console.EasyConsole.Run (
+module System.Console.ArgParser.Run (
   -- * Running a parser
     runApp
   , parseArgs
@@ -23,11 +23,11 @@ module System.Console.EasyConsole.Run (
 
 import           Control.Monad
 import           Data.Maybe
-import           System.Console.EasyConsole.ArgsProcess
-import           System.Console.EasyConsole.BaseType
-import           System.Console.EasyConsole.Format
-import           System.Console.EasyConsole.Params
-import           System.Console.EasyConsole.Parser
+import           System.Console.ArgParser.ArgsProcess
+import           System.Console.ArgParser.BaseType
+import           System.Console.ArgParser.Format
+import           System.Console.ArgParser.Params
+import           System.Console.ArgParser.Parser
 import           System.Environment
 
 runParser :: Parser a -> NiceArgs -> ParseResult a

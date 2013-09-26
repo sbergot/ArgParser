@@ -11,15 +11,15 @@ Subparsers allows the creation of complex command line
 applications organized around commands.
 -}
 
-module System.Console.EasyConsole.SubParser (
+module System.Console.ArgParser.SubParser (
     mkSubParser
   , mkSubParserWithName
   ) where
 
-import           System.Console.EasyConsole.BaseType
-import           System.Console.EasyConsole.Params
-import           System.Console.EasyConsole.Parser
-import           System.Console.EasyConsole.Run
+import           System.Console.ArgParser.BaseType
+import           System.Console.ArgParser.Params
+import           System.Console.ArgParser.Parser
+import           System.Console.ArgParser.Run
 import           System.Environment
 
 -- | Create a parser composed of a list of subparsers.
@@ -44,12 +44,12 @@ mkSubParserWithName name parsers = CmdLineApp
   cmdSpecialFlags = commands ++ defaultSpecialFlags
   commands = map mkSpecialFlag parsers
 
-commandParser :: (Arg -> ParseResult a) -> ParserSpec a
+commandParser :: ArgParser a -> ParserSpec a
 commandParser = liftParam . StdArgParam Mandatory Pos "command"
 
 mkSpecialFlag :: (Arg, CmdLineApp a) -> SpecialFlag a
 mkSpecialFlag (arg, subapp) = (parser, action) where
-  parser = commandParser $ Right . (== arg)
+  parser = commandParser . SingleArgParser $ Right . (== arg)
   action _ (posargs, flagargs) =
     parseNiceArgs (drop 1 posargs, flagargs) subapp
 

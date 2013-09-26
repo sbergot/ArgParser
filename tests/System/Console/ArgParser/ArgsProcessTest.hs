@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
-module System.Console.EasyConsole.ArgsProcessTest where
+module System.Console.ArgParser.ArgsProcessTest where
 
 import           Data.Map                               as M
-import           System.Console.EasyConsole.ArgsProcess
+import           System.Console.ArgParser.ArgsProcess
 import           Test.Framework
 import           Test.HUnit
 

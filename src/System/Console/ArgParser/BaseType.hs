@@ -10,7 +10,7 @@ Portability :  portable
 Base types shared by several EasyConsole modules.
 -}
 
-module System.Console.EasyConsole.BaseType where
+module System.Console.ArgParser.BaseType where
 
 import           Control.Applicative
 import qualified Data.Map            as M

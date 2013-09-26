@@ -11,7 +11,7 @@ Module containing helpers to print information
 about a parser.
 -}
 
-module System.Console.EasyConsole.Format (
+module System.Console.ArgParser.Format (
   -- * Print information about the parser
     showCmdLineAppUsage
   , showCmdLineVersion
@@ -22,7 +22,7 @@ module System.Console.EasyConsole.Format (
 
 import qualified Data.Map                            as M
 import           Data.Maybe
-import           System.Console.EasyConsole.BaseType
+import           System.Console.ArgParser.BaseType
 
 -- | Specification of the help layout
 data CmdLineFormat = CmdLineFormat

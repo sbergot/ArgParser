@@ -1,6 +1,3 @@
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-
 {- |
 Module      :  $Header$
 Copyright   :  (c) Simon Bergot
@@ -13,12 +10,13 @@ Portability :  portable
 Parameters are basic building blocks of a command line parser.
 -}
 
-module System.Console.EasyConsole.Params (
+module System.Console.ArgParser.Params (
   -- * Standard constructors
   -- ** Constructor
    StdArgParam (..)
   -- ** Misc types
   , ArgSrc (..)
+  , ArgParser (..)
   , Optionality (..)
   , Key
   -- * Special constructors
@@ -29,8 +27,8 @@ module System.Console.EasyConsole.Params (
 import qualified Data.Map                            as M
 import           Data.Maybe
 import           Data.List
-import           System.Console.EasyConsole.BaseType
-import           System.Console.EasyConsole.Parser
+import           System.Console.ArgParser.BaseType
+import           System.Console.ArgParser.Parser
 
 -- | identifier used to specify the name of a flag
 --   or a positional argument.
@@ -98,27 +96,38 @@ data ArgSrc = Flag | Pos
 --   be provided.
 data Optionality a = Mandatory | Optional a
 
-class ParserArg argformat where
-  runflagparse :: (argformat -> ParseResult res) -> Args -> ParseResult res
-  runposparse :: (argformat -> ParseResult res) -> Args -> (ParseResult res, Args)
-  getvalformat :: (argformat -> ParseResult res) -> String
+-- | Defines the number of args consumed by a standard parameter
+data ArgParser a =
+  -- | Uses exactly one arg
+  SingleArgParser (Arg -> ParseResult a) |
+  -- | Uses any number of args
+  MulipleArgParser (Args -> ParseResult a)
 
-instance ParserArg Arg where
-  runflagparse parser args = case args of
+runFlagParse
+  :: ArgParser a
+  -> Args
+  -> ParseResult a
+runFlagParse parser args = case parser of
+  SingleArgParser f -> case args of
     []    -> Left "missing arg"
-    [val] -> parser val
+    [val] -> f val
     _     -> Left "too many args"
+  MulipleArgParser f -> f args
 
-  runposparse parser args = case args of
-   []       -> (Left "missing arg", [])
-   val:rest -> (parser val, rest)
+runPosParse
+  :: ArgParser a
+  -> Args
+  -> (ParseResult a, Args)
+runPosParse parser args = case parser of
+  SingleArgParser f -> case args of
+    []       -> (Left "missing arg", [])
+    val:rest -> (f val, rest)
+  MulipleArgParser f -> (f args, [])
 
-  getvalformat _ = "VAL"
-
-instance ParserArg Args where
-  runflagparse parser = parser
-  runposparse  parser vals = (parser vals, [])
-  getvalformat _ = "VAL [VALS ...]"
+getValFormat :: ArgParser a -> String
+getValFormat parser = case parser of
+  SingleArgParser _  -> "VAL"
+  MulipleArgParser _ -> "[VALS ...]"
 
 -- | Defines a parameter consuming arguments on the command line.
 --   The source defines whether the arguments are positional:
@@ -133,15 +142,15 @@ instance ParserArg Args where
 --
 -- > myprog -m flagarg1 flagarg2 ...
 --
---   One can provide two signatures of parsing function:
+--   One can provide two signatures of parsing function using the 'ArgParser type':
 --
---   * @String -> a@ means that the parameter expect exactly one arg 
+--   * 'SingleArgParser' means that the parameter expect exactly one arg 
 --
---   * @[String] -> a@ means that the parameter expect any number of args 
-data StdArgParam argformat a =
-  StdArgParam (Optionality a) ArgSrc Key (argformat -> ParseResult a)
+--   * 'MulipleArgParser' means that the parameter expect any number of args 
+data StdArgParam a =
+  StdArgParam (Optionality a) ArgSrc Key (ArgParser a)
 
-instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
+instance ParamSpec StdArgParam where
   getParser (StdArgParam opt src key parse) = Parser rawparse where
     rawparse = choosesrc flagparse posparse src
 
@@ -149,11 +158,11 @@ instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
       (margs, rest) = takeFlag key flags
       res = case margs of
         Nothing -> defaultOrError "missing flag"
-        Just args -> runflagparse parse args
+        Just args -> runFlagParse parse args
 
     posparse (pos, flags) = case pos of
       [] -> (logkey key $ defaultOrError "missing arg", (pos, flags))
-      args -> let (res, rest) = runposparse parse args
+      args -> let (res, rest) = runPosParse parse args
               in  (res, (rest, flags))
 
     defaultOrError = missing opt
@@ -161,7 +170,7 @@ instance ParserArg argformat => ParamSpec (StdArgParam argformat) where
   getParamDescr (StdArgParam opt src key parser) = 
     ParamDescr (wrap opt usage) (category opt) usage ""
    where
-    usage = getkeyformat src key ++ "  " ++ getvalformat parser
+    usage = getkeyformat src key ++ "  " ++ getValFormat parser
     wrap Mandatory msg = msg
     wrap _         msg = "[" ++ msg ++ "]"
     
