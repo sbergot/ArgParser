@@ -15,26 +15,38 @@ help/usage are automatically built from the parser specification.
 
 Here is a quick exemple. First, we need a datatype:
 
-> data MyTest = MyTest Int Int
+@
+data MyTest = MyTest Int Int
+  deriving (Show) -- we will print the values
+@
 
 Then, we define a parser:
 
 @
-
 myTestParser :: ParserSpec MyTest
 myTestParser = MyTest
-  `parsedBy` reqPos "pos1"
-  `andBy` optPos 0 "pos2"
+  \`parsedBy\` reqPos \"pos1\"
+  \`andBy\` optPos 0 \"pos2\"
+@
+
+we proceed to build an interface and run it:
 
 @
+main = do
+  interface <- mkApp myTestParser
+  runApp interface print
+@
+
+Building this code will produce a bin
 -}
 module System.Console.ArgParser (
   -- * Creating a parser
-    mkApp
-  , mkSubParser
-  , runApp
-  , parsedBy
+    parsedBy
   , andBy
+  , mkApp
+  , mkSubParser
+  -- * Running a parser
+  , runApp
   -- * Creating parameters
   -- | Values provided to 'parsedBy' and 'andBy' should be created with
   --   the following functions. Those are shortcuts based on data types defined in
@@ -50,7 +62,7 @@ module System.Console.ArgParser (
   --
   --   Note that single arg parameters need exactly one arg, and that multiple args
   --   parameters can have any number of args (0 included).
-  --
+  
   -- ** Parameters without args
   , boolFlag
   -- ** Parameters with one arg
