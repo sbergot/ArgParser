@@ -34,12 +34,18 @@ type ParseResult a = Either String a
 
 -- | Data structure describing a parameter
 data ParamDescr = ParamDescr
-  { argUsage    :: String -- ^ Short description of the parameter format
+  { argUsageFmt :: String -> String -- ^ Short description of the parameter format
   , argCategory :: String -- ^ Category of parameter (optional/mandatory)
-  , argFormat   :: String -- ^ Format of the parameter to provide
+  , argFormat   :: String -> String -- ^ Format of the parameter to provide
   , argDescr    :: String -- ^ Description of the parameter
   , argMetaVar  :: String -- ^ Description of the parameter in the usage
   }
+
+argUsage :: ParamDescr -> String
+argUsage d = argUsageFmt d $ argMetaVar d
+
+getArgFormat :: ParamDescr -> String
+getArgFormat d = argFormat d $ argMetaVar d
 
 -- | A parser actual function
 data Parser a = Parser (NiceArgs -> (ParseResult a, NiceArgs))

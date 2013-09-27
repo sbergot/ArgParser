@@ -69,9 +69,9 @@ instance ParamSpec FlagParam where
      where
       (args, rest) = takeFlag key flags
   getParamDescr (FlagParam key _) = [ParamDescr
-    ("[--" ++ key ++ "]")
+    (const $ "[--" ++ key ++ "]")
     "optional arguments"
-    (flagformat key)
+    (const $ flagformat key)
     ""
     (map toUpper key)]
 
@@ -143,10 +143,10 @@ runPosParse parser args = case parser of
     val:rest -> (f val, rest)
   MulipleArgParser f -> (f args, [])
 
-getValFormat :: ArgParser a -> String
-getValFormat parser = case parser of
-  SingleArgParser _  -> "VAL"
-  MulipleArgParser _ -> "[VALS ...]"
+getValFormat :: ArgParser a -> String -> String
+getValFormat parser metavar = case parser of
+  SingleArgParser _  -> metavar
+  MulipleArgParser _ -> "[" ++ metavar ++ "...]"
 
 -- | Defines a parameter consuming arguments on the command line.
 --   The source defines whether the arguments are positional:
@@ -189,9 +189,10 @@ instance ParamSpec StdArgParam where
 
   getParamDescr (StdArgParam opt src key parser) =
     [ParamDescr
-      (wrap opt usage) (category opt) usage "" (map toUpper key)]
+      (wrap opt . usage) (category opt) usage "" (map toUpper key)]
    where
-    usage = getkeyformat src key ++ "  " ++ getValFormat parser
+    usage :: String -> String
+    usage metavar = getkeyformat src key ++ "  " ++ getValFormat parser metavar
     wrap Mandatory msg = msg
     wrap _         msg = "[" ++ msg ++ "]"
 

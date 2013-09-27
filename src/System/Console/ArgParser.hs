@@ -7,9 +7,27 @@ Maintainer  :  simon.bergot@gmail.com
 Stability   :  unstable
 Portability :  portable
 
-Simple command line parsing library.
--}
+Simple command line parsing library. This library provides
+a small combinator dsl to specify a parser for a datatype.
+Running the parser will automatically consume and convert
+command line arguments. Default special action such as 
+help/usage are automatically built from the parser specification.
 
+Here is a quick exemple. First, we need a datatype:
+
+> data MyTest = MyTest Int Int
+
+Then, we define a parser:
+
+@
+
+myTestParser :: ParserSpec MyTest
+myTestParser = MyTest
+  `parsedBy` reqPos "pos1"
+  `andBy` optPos 0 "pos2"
+
+@
+-}
 module System.Console.ArgParser (
   -- * Creating a parser
     mkApp
@@ -19,7 +37,20 @@ module System.Console.ArgParser (
   , andBy
   -- * Creating parameters
   -- | Values provided to 'parsedBy' and 'andBy' should be created with
-  --   the following functions.
+  --   the following functions. Those are shortcuts based on data types defined in
+  --   "System.Console.ArgParser.Params". The types are inferred. argparser will use
+  --   'read' to convert the arguments to haskell values.
+  --
+  --   Flags can be passed in long form (@--foo@) or short form (@-f@)
+  --   You may also provide a prefix form such as @--fo@.
+  --
+  --   Mandatory parameters will fail if the argument is absent or invalid.
+  --   Optional parameters only fail if the argument is invalid (ie @foo@ passed
+  --   as @Int@)
+  --
+  --   Note that single arg parameters need exactly one arg, and that multiple args
+  --   parameters can have any number of args (0 included).
+  --
   -- ** Parameters without args
   , boolFlag
   -- ** Parameters with one arg
@@ -47,5 +78,3 @@ import           System.Console.ArgParser.SubParser   (mkSubParser)
 -- TODO documentation of the top level module
 -- TODO improve QuickParams doc with failure/success cases
 -- TODO add Format tests
--- TODO add Meta Var usage
--- TODO run coverage analysis

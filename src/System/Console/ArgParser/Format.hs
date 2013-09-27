@@ -76,7 +76,7 @@ showargformat :: CmdLineFormat -> ParamDescr -> String
 showargformat fmt descr =
   keyindent ++ formattedkey ++ sep ++ descrtext where
     keyindent = replicate (keyIndentWidth fmt) ' '
-    formattedkey = argFormat descr
+    formattedkey = getArgFormat descr
     _maxkeywidth = maxKeyWidth fmt
     padding = _maxkeywidth - length formattedkey
     sep = if padding > 0
