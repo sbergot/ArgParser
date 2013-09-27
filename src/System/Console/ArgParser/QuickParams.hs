@@ -20,7 +20,7 @@ module System.Console.ArgParser.QuickParams (
   , optFlag
   -- ** Positional
   , reqPos
-  , optPos 
+  , optPos
   -- * Parameters with multiple args
   -- ** Flags
   , reqFlagArgs
@@ -29,10 +29,10 @@ module System.Console.ArgParser.QuickParams (
   , posArgs
   ) where
 
-import System.Console.ArgParser.BaseType
-import System.Console.ArgParser.Params
-import Text.Read (readMaybe)
-import Data.Either (partitionEithers)
+import           Data.Either                       (partitionEithers)
+import           System.Console.ArgParser.BaseType
+import           System.Console.ArgParser.Params
+import           Text.Read                         (readMaybe)
 
 readArg
   :: Read a
@@ -53,7 +53,7 @@ readArg key arg = case readMaybe arg of
 boolFlag
   :: Key            -- ^ flag key
   -> FlagParam Bool
-boolFlag key = FlagParam key id 
+boolFlag key = FlagParam key id
 
 -- | A mandatory positional argument parameter
 reqPos

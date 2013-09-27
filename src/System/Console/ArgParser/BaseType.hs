@@ -24,12 +24,12 @@ type Flags = M.Map Arg Args
 -- | Structured args to be parsed.
 --   Pair of (positionnal arguments, flag arguments)
 type NiceArgs =
-  ( Args  
+  ( Args
   , Flags
   )
 -- | Type representing the result of the parse.
 --   Right val in case of success or
---   Left msg if there was an error. 
+--   Left msg if there was an error.
 type ParseResult a = Either String a
 
 -- | Data structure describing a parameter
@@ -38,6 +38,7 @@ data ParamDescr = ParamDescr
   , argCategory :: String -- ^ Category of parameter (optional/mandatory)
   , argFormat   :: String -- ^ Format of the parameter to provide
   , argDescr    :: String -- ^ Description of the parameter
+  , argMetaVar  :: String -- ^ Description of the parameter in the usage
   }
 
 -- | A parser actual function
@@ -58,7 +59,7 @@ instance Applicative ParserSpec where
     ParserSpec (d1 ++ d2) (p1 <*> p2)
 
 -- | A special action with more possibilities.
---   The full arg list will be provided, 
+--   The full arg list will be provided,
 --   with the command line spec itself.
 type SpecialAction a =
   CmdLineApp a
@@ -67,7 +68,7 @@ type SpecialAction a =
 
 -- | A special parser allowing to
 --   perform standard actions.
---   Used for version/help/subparsers. 
+--   Used for version/help/subparsers.
 type SpecialFlag a = (ParserSpec Bool, SpecialAction a)
 
 -- | A command line application, with a parser and a description

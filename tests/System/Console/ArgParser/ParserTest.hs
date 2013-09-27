@@ -24,3 +24,39 @@ prop_parse
   -> Bool
 prop_parse (Positive i) (Positive j) =
   Right (MyTest i j) == specRun myTestParser [show i, show j]
+
+data MySuperTest = MySuperTest Int Int Int MyTest Int Int
+  deriving (Eq, Show)
+
+mySuperParser :: ParserSpec MySuperTest
+mySuperParser = MySuperTest
+ `parsedBy` reqPos "pos1"
+ `andBy` reqPos "pos2"
+ `andBy` reqPos "pos3"
+ `andBy` (MyTest
+   `subParser` reqPos "pos4"
+   `andBy` reqPos "pos5")
+ `andBy` reqPos "pos6"
+ `andBy` reqPos "pos7"
+
+prop_superParse
+  :: Positive Int
+  -> Positive Int
+  -> Positive Int
+  -> Positive Int
+  -> Positive Int
+  -> Positive Int
+  -> Positive Int
+  -> Bool
+prop_superParse
+  (Positive i1)
+  (Positive i2)
+  (Positive i3)
+  (Positive i4)
+  (Positive i5)
+  (Positive i6)
+  (Positive i7) =
+  Right expected == result where
+    expected = MySuperTest i1 i2 i3 (MyTest i4 i5) i6 i7 
+    result = specRun mySuperParser $ map show
+      [ i1, i2, i3, i4, i5, i6, i7]

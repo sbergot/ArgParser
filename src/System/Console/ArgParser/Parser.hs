@@ -15,6 +15,7 @@ module System.Console.ArgParser.Parser
   , liftParam
   , parsedBy
   , andBy
+  , subParser
   ) where
 
 import           Control.Applicative
@@ -23,13 +24,17 @@ import           System.Console.ArgParser.BaseType
 -- | interface allowing to define a basic block of a command line parser
 class ParamSpec spec where
   getParser :: spec res -> Parser res
-  getParamDescr :: spec res -> ParamDescr
+  getParamDescr :: spec res -> [ParamDescr]
 
--- | Converts any "ParamSpec" to a "ParserSpec" 
+-- | Converts any "ParamSpec" to a "ParserSpec"
 liftParam :: ParamSpec spec => spec res -> ParserSpec res
 liftParam param = ParserSpec
-  [getParamDescr param]
+  (getParamDescr param)
   $ getParser param
+
+instance ParamSpec ParserSpec where
+  getParser = getParserFun
+  getParamDescr = getParserParams
 
 infixl 1 `andBy`
 -- | Build a parser from a parser and a ParamSpec
@@ -52,3 +57,11 @@ parsedBy
   -> spec a
   -> ParserSpec b
 parsedBy constr firstarg = constr <$> liftParam firstarg
+
+infixl 2 `subParser`
+subParser
+  :: ParamSpec spec
+  => (a -> b)
+  -> spec a
+  -> ParserSpec b
+subParser = parsedBy

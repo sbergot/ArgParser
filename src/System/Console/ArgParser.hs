@@ -45,6 +45,7 @@ import           System.Console.ArgParser.Run         (mkApp, runApp)
 import           System.Console.ArgParser.SubParser   (mkSubParser)
 
 -- TODO documentation of the top level module
--- TODO add tests
--- TODO run coverage analysis
 -- TODO improve QuickParams doc with failure/success cases
+-- TODO add Format tests
+-- TODO add Meta Var usage
+-- TODO run coverage analysis

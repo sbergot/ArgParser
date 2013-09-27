@@ -22,11 +22,13 @@ module System.Console.ArgParser.Params (
   -- * Special constructors
   , FlagParam (..)
   , Descr (..)
+  , MetaVar (..)
   ) where
 
-import qualified Data.Map                            as M
-import           Data.Maybe
+import           Data.Char                         (toUpper)
 import           Data.List
+import qualified Data.Map                          as M
+import           Data.Maybe
 import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Parser
 
@@ -66,11 +68,12 @@ instance ParamSpec FlagParam where
       Nothing -> (Right $ parse False, (pos, rest))
      where
       (args, rest) = takeFlag key flags
-  getParamDescr (FlagParam key _) = ParamDescr
+  getParamDescr (FlagParam key _) = [ParamDescr
     ("[--" ++ key ++ "]")
     "optional arguments"
     (flagformat key)
     ""
+    (map toUpper key)]
 
 infixl 2 `Descr`
 
@@ -79,14 +82,30 @@ infixl 2 `Descr`
 --
 -- > myparam `Descr` "this is my description"
 data Descr spec a = Descr
-  { getvalue     :: spec a
+  { getdvalue    :: spec a
   , getuserdescr :: String
   }
 
 instance ParamSpec spec => ParamSpec (Descr spec) where
-  getParser = getParser . getvalue
-  getParamDescr (Descr inner descr) = 
-    (getParamDescr inner) { argDescr = descr }
+  getParser = getParser . getdvalue
+  getParamDescr (Descr inner descr) =
+    map (\d -> d { argDescr = descr }) (getParamDescr inner)
+
+infixl 2 `MetaVar`
+
+-- | Allows the user to provide a description for a particular parameter.
+--   Can be used as an infix operator:
+--
+-- > myparam `Descr` "this is my description"
+data MetaVar spec a = MetaVar
+  { getmvvalue  :: spec a
+  , getusermvar :: String
+  }
+
+instance ParamSpec spec => ParamSpec (MetaVar spec) where
+  getParser = getParser . getmvvalue
+  getParamDescr (MetaVar inner metavar) =
+    map (\d -> d { argMetaVar = metavar }) (getParamDescr inner)
 
 -- | Defines the source of a parameter: either positional or flag.
 data ArgSrc = Flag | Pos
@@ -144,9 +163,9 @@ getValFormat parser = case parser of
 --
 --   One can provide two signatures of parsing function using the 'ArgParser type':
 --
---   * 'SingleArgParser' means that the parameter expect exactly one arg 
+--   * 'SingleArgParser' means that the parameter expect exactly one arg
 --
---   * 'MulipleArgParser' means that the parameter expect any number of args 
+--   * 'MulipleArgParser' means that the parameter expect any number of args
 data StdArgParam a =
   StdArgParam (Optionality a) ArgSrc Key (ArgParser a)
 
@@ -168,13 +187,14 @@ instance ParamSpec StdArgParam where
 
     defaultOrError = missing opt
 
-  getParamDescr (StdArgParam opt src key parser) = 
-    ParamDescr (wrap opt usage) (category opt) usage ""
+  getParamDescr (StdArgParam opt src key parser) =
+    [ParamDescr
+      (wrap opt usage) (category opt) usage "" (map toUpper key)]
    where
     usage = getkeyformat src key ++ "  " ++ getValFormat parser
     wrap Mandatory msg = msg
     wrap _         msg = "[" ++ msg ++ "]"
-    
+
 
 choosesrc :: a -> a -> ArgSrc -> a
 choosesrc flag pos src = case src of

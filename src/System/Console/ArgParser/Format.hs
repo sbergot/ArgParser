@@ -20,7 +20,7 @@ module System.Console.ArgParser.Format (
   , defaultFormat
   ) where
 
-import qualified Data.Map                            as M
+import qualified Data.Map                          as M
 import           Data.Maybe
 import           System.Console.ArgParser.BaseType
 
@@ -49,7 +49,7 @@ showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
 showCmdLineAppUsage fmt app = unlines
   [ showCmdLineVersion app
   , appUsage
-  , appDescr 
+  , appDescr
   , appParams
   ]
  where

@@ -13,7 +13,7 @@ Preprocess args from a list of words to a pair containing positional args/flag a
 module System.Console.ArgParser.ArgsProcess (preprocess) where
 
 import           Data.List
-import qualified Data.Map                            as M
+import qualified Data.Map                          as M
 import           System.Console.ArgParser.BaseType
 
 -- | Separate positional arguments from flag arguments
