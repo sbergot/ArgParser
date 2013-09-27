@@ -27,6 +27,7 @@ myTestParser = mkSubParserWithName "subparser"
   ]
 
 test_subparser :: Assertion
-test_subparser = do
-  assertSuccess (MyCons1 1 2) $ parseArgs ["A", "1", "2"] myTestParser
-  assertSuccess (MyCons2 3) $ parseArgs ["B", "3"] myTestParser
+test_subparser = behavior (`parseArgs` myTestParser)
+  [ (willSucceed (MyCons1 1 2), ["A", "1", "2"])
+  , (willSucceed (MyCons2 3), ["B", "3"])
+  ]

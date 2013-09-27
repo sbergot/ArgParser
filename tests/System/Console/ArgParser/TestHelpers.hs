@@ -25,20 +25,29 @@ specRun
 specRun param args = parseArgs args $
   mkDefaultApp param ""
 
-assertFail :: Show a => ParseResult a -> Assertion
-assertFail res = case res  of
+willFail :: Show a => ParseResult a -> Assertion
+willFail res = case res  of
   Left _    -> return ()
   Right val -> assertFailure $
     "\nexpected parsing to fail but got " ++ show val
 
-assertSuccess
+willSucceed
   :: (Show a, Eq a)
   => a
   -> ParseResult a
   -> Assertion
-assertSuccess val res = case res  of
+willSucceed val res = case res  of
   Left msg     -> assertFailure $ "\nparsing failed: " ++ msg
   Right resval -> assertEqual val resval
+
+behavior
+  :: ([String] -> ParseResult a)
+  -> [(ParseResult a -> Assertion, [String])]
+  -> Assertion
+behavior parser candidates = sequence_ assertions where
+  (preds, args) = unzip candidates
+  results = map parser args
+  assertions = zipWith ($) preds results
 
 getIntSuccessProp
   :: ([String] -> ParseResult Int)
