@@ -8,7 +8,26 @@ Stability   :  unstable
 Portability :  portable
 
 Collection of functions which are basically shortcuts
-of "System.Console.EasyConsole.Params" versions.
+of "System.Console.EasyConsole.Params" versions. If you
+cannot find a parameter fitting your needs, you should check this
+module.
+
+
+Values provided to 'parsedBy' and 'andBy' should be created with
+the following functions. Those are shortcuts based on data types defined in
+"System.Console.ArgParser.Params". The types are inferred. argparser will use
+'read' to convert the arguments to haskell values.
+
+Flags can be passed in long form (@--foo@) or short form (@-f@)
+You may also provide a prefix form such as @--fo@.
+
+Mandatory parameters will fail if the argument is absent or invalid.
+Optional parameters only fail if the argument is invalid (ie @foo@ passed
+as @Int@)
+
+Note that single arg parameters need exactly one arg, and that multiple args
+parameters can have any number of args (0 included).
+
 -}
 
 module System.Console.ArgParser.QuickParams (

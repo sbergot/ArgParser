@@ -23,10 +23,7 @@ type Args  = [Arg]
 type Flags = M.Map Arg Args
 -- | Structured args to be parsed.
 --   Pair of (positionnal arguments, flag arguments)
-type NiceArgs =
-  ( Args
-  , Flags
-  )
+type NiceArgs = (Args, Flags)
 -- | Type representing the result of the parse.
 --   Right val in case of success or
 --   Left msg if there was an error.
@@ -41,9 +38,13 @@ data ParamDescr = ParamDescr
   , argMetaVar  :: String -- ^ Description of the parameter in the usage
   }
 
+-- | Returns a short description of the input format
+--   of a parameter.
 argUsage :: ParamDescr -> String
 argUsage d = argUsageFmt d $ argMetaVar d
 
+-- | Returns a short description of the input format
+--   of a parameter.
 getArgFormat :: ParamDescr -> String
 getArgFormat d = argFormat d $ argMetaVar d
 

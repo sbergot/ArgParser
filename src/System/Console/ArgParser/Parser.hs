@@ -58,7 +58,8 @@ parsedBy
   -> ParserSpec b
 parsedBy constr firstarg = constr <$> liftParam firstarg
 
-infixl 2 `subParser`
+infixr 3 `subParser`
+-- | This is 'parsedBy' with a different fixity.
 subParser
   :: ParamSpec spec
   => (a -> b)

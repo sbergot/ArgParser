@@ -47,10 +47,8 @@ test-suite TestsHTF
                    System.Console.ArgParser.FormatTest,
                    System.Console.ArgParser.ParserTest,
                    System.Console.ArgParser.QuickParamsTest,
-                   System.Console.ArgParser.RunTest,
                    System.Console.ArgParser.SubParserTest,
-                   System.Console.ArgParser.TestHelpers,
-                   System.Console.ArgParserTest
+                   System.Console.ArgParser.TestHelpers
   hs-source-dirs:  
                   tests,
                   src
