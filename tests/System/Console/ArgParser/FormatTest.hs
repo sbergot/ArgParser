@@ -30,6 +30,7 @@ test_basicFormat = assertEqual
   , "mandatory arguments:"
   , " -f, --foo  FOO"
   , " -b, --bar  BAR"
+  , " -h, --help  show this help message and exit"
   , ""
   ])
   $ showCmdLineAppUsage defaultFormat myTestParser
