@@ -96,20 +96,21 @@ data MySubTest =
 mySubTestParser :: CmdLnInterface MySubTest
 mySubTestParser = mkSubParserWithName "subparser"
   [ ("A", mkDefaultApp
-    (MyCons1 `parsedBy` reqPos "pos1" `andBy` reqPos "pos2") "A")
+      (MyCons1 `parsedBy` reqPos "pos1" `andBy` reqPos "pos2") "A")
   , ("B", mkDefaultApp
-    (MyCons2 `parsedBy` reqPos "pos1") "B") 
+      (MyCons2 `parsedBy` reqPos "pos1") "B") 
   ]
 
 test_subparserFormat :: Assertion
 test_subparserFormat = assertEqual
   ( unlines
-  [ "test"
-  , "usage : test foo bar [-h] [-v]"
+  [ "subparser"
+  , "usage : subparser {A,B} [-h] [-v]"
   , ""
-  , "mandatory arguments:"
-  , " foo"
-  , " bar"
+  , "commands arguments:"
+  , " {A,B}"
+  , " A"
+  , " B"
   , ""
   , "optional arguments:"
   , " -h, --help                    show this help message and exit"

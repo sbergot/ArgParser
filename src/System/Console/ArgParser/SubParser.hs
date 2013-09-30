@@ -16,6 +16,8 @@ module System.Console.ArgParser.SubParser (
   , mkSubParserWithName
   ) where
 
+import qualified          Data.List as L
+import qualified Data.Map                          as M
 import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Params
 import           System.Console.ArgParser.Parser
@@ -56,7 +58,31 @@ mkSpecialFlag (arg, subapp) = (parser, action) where
 
 data EmptyParam a = EmptyParam
 
-
 instance ParamSpec EmptyParam where
   getParser _ = error "impossible"
   getParamDescr _ = []
+
+data CommandParam a = CommandParam [CmdLnInterface a]
+
+instance ParamSpec CommandParam where
+  getParser (CommandParam cmds) = cmdParser where
+    cmdParser (pos, flags) = case pos of
+      [] -> Left "No command provided"
+      arg:rest -> (res, ([], M.empty)) where
+        res = case L.find ((arg ==) . getAppName) cmds of
+          Just cmdApp -> parseNiceArgs (rest, flags)
+          Nothing -> Left "Command not recognized: " ++ arg
+
+  getParamDescr (CommandParam cmds) = summary:commands where
+    names = map getAppName cmds
+    descrs = map getAppDescr cmds
+    summaryUsage = const $ L.intercalate "," names
+    summary = ParamDescr
+      summaryUsage
+      "commands arguments"
+      summaryUsage
+      ""
+      ""
+    commands = zipwith
+
+
