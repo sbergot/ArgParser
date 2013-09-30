@@ -57,7 +57,11 @@ data FlagParam a =
   FlagParam Key (Bool -> a)
 
 flagformat :: String -> String
-flagformat key = "-" ++ first ++ ", --" ++ key where
+flagformat key = shortfmt ++ ", --" ++ key where
+  shortfmt = shortflagformat key
+
+shortflagformat :: String -> String
+shortflagformat key = '-' : first where
   first = take 1 key
 
 instance ParamSpec FlagParam where
@@ -189,21 +193,25 @@ instance ParamSpec StdArgParam where
 
   getParamDescr (StdArgParam opt src key parser) =
     [ParamDescr
-      (wrap opt . usage) (category opt) usage "" (map toUpper key)]
+      (wrap opt . usage) (category opt) format "" _metavar]
    where
-    usage :: String -> String
-    usage metavar = getkeyformat src key ++ "  " ++ getValFormat parser metavar
+    getflagformat flagfmt = choosesrc
+      ((++ "  ") . flagfmt)
+      (const "")
+    getinputfmt flagfmt metavar = flag ++ value where
+      flag = getflagformat flagfmt src key
+      value = getValFormat parser metavar
+    usage = getinputfmt shortflagformat
+    format = getinputfmt flagformat
     wrap Mandatory msg = msg
     wrap _         msg = "[" ++ msg ++ "]"
+    _metavar = choosesrc (map toUpper key) key src
 
 
 choosesrc :: a -> a -> ArgSrc -> a
 choosesrc flag pos src = case src of
   Flag -> flag
   Pos -> pos
-
-getkeyformat :: ArgSrc -> String -> String
-getkeyformat = choosesrc id flagformat
 
 missing :: Optionality a -> String -> ParseResult a
 missing opt msg = case opt of

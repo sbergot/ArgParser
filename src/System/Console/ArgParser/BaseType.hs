@@ -43,7 +43,7 @@ data ParamDescr = ParamDescr
 argUsage :: ParamDescr -> String
 argUsage d = argUsageFmt d $ argMetaVar d
 
--- | Returns a short description of the input format
+-- | Returns a long description of the input format
 --   of a parameter.
 getArgFormat :: ParamDescr -> String
 getArgFormat d = argFormat d $ argMetaVar d

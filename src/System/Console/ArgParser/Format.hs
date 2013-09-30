@@ -56,11 +56,11 @@ showCmdLineAppUsage fmt app = unlines
   appDescr = fromMaybe "" $ getAppDescr app
   paramdescrs = getParserParams $ cmdArgParser app
   appParams = formatParamDescrs fmt paramdescrs
-  appUsage = "usage : " ++ usage
+  appUsage = "usage : " ++ getAppName app ++ " " ++ usage
   usage = unwords $ map argUsage paramdescrs
 
 groupByKey :: Ord k => (a -> k) -> [a] -> [(k, [a])]
-groupByKey getkey xs = M.toList $ M.fromListWith (++)
+groupByKey getkey xs = M.toList $ M.fromListWith (flip (++))
   $ map (\x -> (getkey x, [x])) xs
 
 formatParamDescrs :: CmdLineFormat -> [ParamDescr] -> String
@@ -79,7 +79,7 @@ showargformat fmt descr =
     formattedkey = getArgFormat descr
     _maxkeywidth = maxKeyWidth fmt
     padding = _maxkeywidth - length formattedkey
-    sep = if padding > 0
+    sep = if padding < 0
       then replicate padding ' '
       else "\n" ++ keyindent ++ replicate _maxkeywidth ' '
     descrtext = argDescr descr
