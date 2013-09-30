@@ -12,8 +12,8 @@ Base types shared by several EasyConsole modules.
 
 module System.Console.ArgParser.BaseType where
 
-import           Control.Applicative
-import qualified Data.Map            as M
+import           Control.Applicative     ((<*>), Applicative, pure)
+import qualified Data.Map as M (Map)
 
 -- | Simple command line arg
 type Arg   = String
@@ -69,7 +69,7 @@ instance Applicative ParserSpec where
 --   The full arg list will be provided,
 --   with the command line spec itself.
 type SpecialAction a =
-  CmdLineApp a
+  CmdLnInterface a
   -> NiceArgs
   -> ParseResult a
 
@@ -79,11 +79,11 @@ type SpecialAction a =
 type SpecialFlag a = (ParserSpec Bool, SpecialAction a)
 
 -- | A command line application, with a parser and a description
-data CmdLineApp a = CmdLineApp
+data CmdLnInterface a = CmdLnInterface
   { cmdArgParser  :: ParserSpec a    -- ^ The argument parser
   , specialFlags  :: [SpecialFlag a] -- ^ The special flags
   , getAppName    :: String          -- ^ The application name.
-                                  --   Usally the binary name.
+                                     --   Usally the binary name.
   , getAppVersion :: Maybe String    -- ^ Optional application version
   , getAppDescr   :: Maybe String    -- ^ Optional description
   }

@@ -73,7 +73,7 @@ instance ParamSpec FlagParam where
      where
       (args, rest) = takeFlag key flags
   getParamDescr (FlagParam key _) = [ParamDescr
-    (const $ "[--" ++ key ++ "]")
+    (const $ "[" ++ shortflagformat key ++ "]")
     "optional arguments"
     (const $ flagformat key)
     ""

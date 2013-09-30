@@ -26,31 +26,37 @@ import           System.Environment
 --
 --   Each subparser is associated with a command which the user
 --   must type to activate.
-mkSubParser :: [(Arg, CmdLineApp a)] -> IO (CmdLineApp a)
+mkSubParser :: [(Arg, CmdLnInterface a)] -> IO (CmdLnInterface a)
 mkSubParser parsers = do
   name <- getProgName
   return $ mkSubParserWithName name parsers
 
 -- | Same that "mkSubParser" but allows a custom name
-mkSubParserWithName :: String -> [(Arg, CmdLineApp a)] -> CmdLineApp a
-mkSubParserWithName name parsers = CmdLineApp
+mkSubParserWithName :: String -> [(Arg, CmdLnInterface a)] -> CmdLnInterface a
+mkSubParserWithName name parsers = CmdLnInterface
   parser
   cmdSpecialFlags
   name
   Nothing
   Nothing
  where
-  parser = commandParser (error "impossible")
+  parser = liftParam EmptyParam
   cmdSpecialFlags = commands ++ defaultSpecialFlags
   commands = map mkSpecialFlag parsers
 
 commandParser :: ArgParser a -> ParserSpec a
 commandParser = liftParam . StdArgParam Mandatory Pos "command"
 
-mkSpecialFlag :: (Arg, CmdLineApp a) -> SpecialFlag a
+mkSpecialFlag :: (Arg, CmdLnInterface a) -> SpecialFlag a
 mkSpecialFlag (arg, subapp) = (parser, action) where
   parser = commandParser . SingleArgParser $ Right . (== arg)
   action _ (posargs, flagargs) =
     parseNiceArgs (drop 1 posargs, flagargs) subapp
 
 
+data EmptyParam a = EmptyParam
+
+
+instance ParamSpec EmptyParam where
+  getParser _ = error "impossible"
+  getParamDescr _ = []

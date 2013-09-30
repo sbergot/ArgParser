@@ -37,7 +37,7 @@ defaultFormat :: CmdLineFormat
 defaultFormat = CmdLineFormat 30 1
 
 -- | Prints the application name and version
-showCmdLineVersion :: CmdLineApp a -> String
+showCmdLineVersion :: CmdLnInterface a -> String
 showCmdLineVersion app =  appName ++ appVersion where
   appName = getAppName app
   appVersion = fromMaybe "" $ getAppVersion app
@@ -47,7 +47,7 @@ showCmdLineVersion app =  appName ++ appVersion where
 -- @
 --   foo bar [bay]
 -- @
-showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
+showCmdLineAppUsage :: CmdLineFormat -> CmdLnInterface a -> String
 showCmdLineAppUsage fmt app = intercalate "\n"
   [ showCmdLineVersion app
   , appUsage
@@ -56,7 +56,9 @@ showCmdLineAppUsage fmt app = intercalate "\n"
   ]
  where
   appDescr = fromMaybe "" $ getAppDescr app
-  paramdescrs = getParserParams $ cmdArgParser app
+  paramdescrs = userDescr ++ specialDescr
+  userDescr = getParserParams $ cmdArgParser app
+  specialDescr = concatMap (getParserParams . fst) $ specialFlags app
   appParams = formatParamDescrs fmt paramdescrs
   appUsage = "usage : " ++ getAppName app ++ " " ++ usage
   usage = unwords $ map argUsage paramdescrs

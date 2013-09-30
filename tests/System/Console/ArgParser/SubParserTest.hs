@@ -18,7 +18,7 @@ data MyTest =
   MyCons2 Int
   deriving (Eq, Show)
 
-myTestParser :: CmdLineApp MyTest
+myTestParser :: CmdLnInterface MyTest
 myTestParser = mkSubParserWithName "subparser"
   [ ("A", mkDefaultApp
     (MyCons1 `parsedBy` reqPos "pos1" `andBy` reqPos "pos2") "A")

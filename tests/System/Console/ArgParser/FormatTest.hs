@@ -6,6 +6,7 @@ import System.Console.ArgParser.BaseType
 import System.Console.ArgParser.Parser
 import System.Console.ArgParser.Params
 import System.Console.ArgParser.Run
+import System.Console.ArgParser.SubParser
 import System.Console.ArgParser.QuickParams
 
 import Test.Framework
@@ -46,6 +47,11 @@ checkFmt param shortUsage longUsage = do
   assertEqual shortUsage $ showUsage param
   assertEqual longUsage $ showArgFmt param
 
+test_boolFlagUsage :: Assertion
+test_boolFlagUsage = checkFmt (boolFlag "foo")
+  "[-f]"
+  "-f, --foo"
+
 test_reqFlagUsage :: Assertion
 test_reqFlagUsage = checkFmt (reqFlag "foo" :: StdArgParam Int)
   "-f  FOO"
@@ -59,7 +65,7 @@ test_reqPosUsage = checkFmt (reqPos "foo" :: StdArgParam Int)
 data MyTest = MyTest Int Int
   deriving (Eq, Show)
 
-myTestParser :: CmdLineApp MyTest
+myTestParser :: CmdLnInterface MyTest
 myTestParser = mkDefaultApp (MyTest
   `parsedBy` reqPos "foo"
   `andBy` reqPos "bar")
@@ -69,12 +75,45 @@ test_basicFormat :: Assertion
 test_basicFormat = assertEqual
   ( unlines
   [ "test"
-  , "usage : test foo bar"
+  , "usage : test foo bar [-h] [-v]"
   , ""
   , "mandatory arguments:"
   , " foo"
   , " bar"
-  , " -h, --help  show this help message and exit"
+  , ""
+  , "optional arguments:"
+  , " -h, --help                    show this help message and exit"
+  , " -v, --version                 print the program version and exit"
   , ""
   ])
   $ showCmdLineAppUsage defaultFormat myTestParser
+
+data MySubTest =
+  MyCons1 Int Int |
+  MyCons2 Int
+  deriving (Eq, Show)
+
+mySubTestParser :: CmdLnInterface MySubTest
+mySubTestParser = mkSubParserWithName "subparser"
+  [ ("A", mkDefaultApp
+    (MyCons1 `parsedBy` reqPos "pos1" `andBy` reqPos "pos2") "A")
+  , ("B", mkDefaultApp
+    (MyCons2 `parsedBy` reqPos "pos1") "B") 
+  ]
+
+test_subparserFormat :: Assertion
+test_subparserFormat = assertEqual
+  ( unlines
+  [ "test"
+  , "usage : test foo bar [-h] [-v]"
+  , ""
+  , "mandatory arguments:"
+  , " foo"
+  , " bar"
+  , ""
+  , "optional arguments:"
+  , " -h, --help                    show this help message and exit"
+  , " -v, --version                 print the program version and exit"
+  , ""
+  ])
+  $ showCmdLineAppUsage defaultFormat mySubTestParser
