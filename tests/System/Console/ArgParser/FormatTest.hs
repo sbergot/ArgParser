@@ -13,15 +13,6 @@ import Test.HUnit
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 
-data MyTest = MyTest Int Int
-  deriving (Eq, Show)
-
-myTestParser :: CmdLineApp MyTest
-myTestParser = mkDefaultApp (MyTest
-  `parsedBy` reqPos "foo"
-  `andBy` reqPos "bar")
-  "test"
-
 single :: [a] -> a
 single xs = case xs of
   [x] -> x
@@ -64,6 +55,15 @@ test_reqPosUsage :: Assertion
 test_reqPosUsage = checkFmt (reqPos "foo" :: StdArgParam Int)
   "foo"
   "foo"
+
+data MyTest = MyTest Int Int
+  deriving (Eq, Show)
+
+myTestParser :: CmdLineApp MyTest
+myTestParser = mkDefaultApp (MyTest
+  `parsedBy` reqPos "foo"
+  `andBy` reqPos "bar")
+  "test"
 
 test_basicFormat :: Assertion
 test_basicFormat = assertEqual

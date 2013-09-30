@@ -20,6 +20,8 @@ module System.Console.ArgParser.Format (
   , defaultFormat
   ) where
 
+import           Data.Char                         (isSpace)
+import           Data.List                         (intercalate)
 import qualified Data.Map                          as M
 import           Data.Maybe
 import           System.Console.ArgParser.BaseType
@@ -46,7 +48,7 @@ showCmdLineVersion app =  appName ++ appVersion where
 --   foo bar [bay]
 -- @
 showCmdLineAppUsage :: CmdLineFormat -> CmdLineApp a -> String
-showCmdLineAppUsage fmt app = unlines
+showCmdLineAppUsage fmt app = intercalate "\n"
   [ showCmdLineVersion app
   , appUsage
   , appDescr
@@ -72,14 +74,18 @@ formatParamDescrs fmt paramdescrs = unlines $ map showCategory categories where
     cat ++ ":\n" ++ formattedargs where
      formattedargs = unlines $ map (showargformat fmt) descrs
 
+trim :: String -> String
+trim = f . f
+   where f = reverse . dropWhile isSpace
+
 showargformat :: CmdLineFormat -> ParamDescr -> String
 showargformat fmt descr =
-  keyindent ++ formattedkey ++ sep ++ descrtext where
+  keyindent ++ trim (formattedkey ++ sep ++ descrtext) where
     keyindent = replicate (keyIndentWidth fmt) ' '
     formattedkey = getArgFormat descr
     _maxkeywidth = maxKeyWidth fmt
-    padding = _maxkeywidth - length formattedkey
-    sep = if padding < 0
+    padding =  _maxkeywidth - length formattedkey
+    sep = if padding > 0
       then replicate padding ' '
       else "\n" ++ keyindent ++ replicate _maxkeywidth ' '
     descrtext = argDescr descr
