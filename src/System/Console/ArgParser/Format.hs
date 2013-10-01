@@ -61,7 +61,7 @@ showCmdLineAppUsage fmt app = intercalate "\n"
   specialDescr = concatMap (getParserParams . fst) $ specialFlags app
   appParams = formatParamDescrs fmt paramdescrs
   appUsage = "usage : " ++ getAppName app ++ " " ++ usage
-  usage = unwords $ map argUsage paramdescrs
+  usage = unwords $ filter (not . null) $ map argUsage paramdescrs
 
 groupByKey :: Ord k => (a -> k) -> [a] -> [(k, [a])]
 groupByKey getkey xs = M.toList $ M.fromListWith (flip (++))

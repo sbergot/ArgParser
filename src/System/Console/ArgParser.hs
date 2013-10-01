@@ -89,5 +89,5 @@ import           System.Console.ArgParser.SubParser   (mkSubParser)
 
 -- TODO documentation of the top level module
 -- TODO improve QuickParams doc with failure/success cases
--- TODO add more Format tests
+-- TODO add more Format tests for descriptions
 -- TODO make the tests pass
