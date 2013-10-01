@@ -200,9 +200,11 @@ instance ParamSpec StdArgParam where
       (const "")
     getinputfmt flagfmt metavar = flag ++ value where
       flag = getflagformat flagfmt src key
-      value = getValFormat parser metavar
+      value =  getValFormat parser metavar
     usage = getinputfmt shortflagformat
-    format = getinputfmt flagformat
+    format = case src of
+      Flag -> getinputfmt flagformat
+      Pos  -> id
     wrap Mandatory msg = msg
     wrap _         msg = "[" ++ msg ++ "]"
     _metavar = choosesrc (map toUpper key) key src

@@ -19,6 +19,7 @@ module System.Console.ArgParser.Run (
   , mkApp
   , mkDefaultApp
   , defaultSpecialFlags
+  , setAppDescr
   ) where
 
 import           Control.Monad
@@ -103,3 +104,7 @@ mkApp spec = liftM (mkDefaultApp spec) getProgName
 mkDefaultApp :: ParserSpec a -> String -> CmdLnInterface a
 mkDefaultApp spec progName = CmdLnInterface
     spec defaultSpecialFlags progName Nothing Nothing
+
+-- | Set the description of an interface
+setAppDescr :: CmdLnInterface a -> String -> CmdLnInterface a
+setAppDescr app descr = app {getAppDescr = Just descr }
