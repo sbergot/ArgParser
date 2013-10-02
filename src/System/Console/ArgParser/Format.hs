@@ -20,6 +20,7 @@ module System.Console.ArgParser.Format (
   , defaultFormat
   ) where
 
+import           Control.Applicative
 import           Data.Char                         (isSpace)
 import           Data.List                         (intercalate)
 import qualified Data.Map                          as M
@@ -55,7 +56,7 @@ showCmdLineAppUsage fmt app = intercalate "\n"
   , appParams
   ]
  where
-  appDescr = fromMaybe "" $ getAppDescr app
+  appDescr = fromMaybe "" ((++ "\n") <$> getAppDescr app)
   paramdescrs = userDescr ++ specialDescr
   userDescr = getParserParams $ cmdArgParser app
   specialDescr = concatMap (getParserParams . fst) $ specialFlags app
