@@ -46,19 +46,50 @@ module System.Console.ArgParser.QuickParams (
   , optFlagArgs
   -- ** Positionnal
   , posArgs
+  -- ** RawRead class
+  , RawRead
   ) where
 
 import           Data.Either                       (partitionEithers)
+import           Data.List                       (unfoldr)
+import           Control.Applicative
 import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Params
 import           Text.Read                         (readMaybe)
 
+class RawRead a where
+  rawParse :: String -> Maybe (a, String)
+
+-- | A class similar to read. The main difference
+--   is that strings are parsed without quotes, and 
+--
+-- > rawRead "foo" :: Maybe String == Just "foo"
+instance RawRead Char where
+  rawParse s = case s of
+    [] -> Nothing
+    c:s' -> Just (c, s')
+
+instance RawRead a => RawRead [a] where
+  rawParse s = Just (unfoldr rawParse s, [])
+
+instance RawRead Float where
+  rawParse = defaultRawParse
+
+instance RawRead Int where
+  rawParse = defaultRawParse
+
+defaultRawParse :: Read t => String -> Maybe (t, String)
+defaultRawParse s = (\val -> (val , [])) <$> readMaybe s
+
+rawRead :: RawRead a => String -> Maybe a
+rawRead s = fst <$> rawParse s
+
 readArg
-  :: Read a
+  :: RawRead a
   => Key
   -> Arg
   -> ParseResult a
-readArg key arg = case readMaybe arg of
+readArg key arg = case rawRead arg of
   Just val -> Right val
   Nothing -> Left $ "Could not parse parameter " ++ key ++ "."
     ++ "Unable to convert " ++ arg
@@ -76,14 +107,14 @@ boolFlag key = FlagParam key id
 
 -- | A mandatory positional argument parameter
 reqPos
-  :: Read a
+  :: RawRead a
   => Key         -- ^ Param name
   -> StdArgParam a
 reqPos key = StdArgParam Mandatory Pos key (SingleArgParser $ readArg key)
 
 -- | An optional positional argument parameter
 optPos
-  :: Read a
+  :: RawRead a
   => a                  -- ^ Default value
   -> Key                -- ^ Param name
   -> StdArgParam a
@@ -91,21 +122,21 @@ optPos val key = StdArgParam (Optional val) Pos key (SingleArgParser $ readArg k
 
 -- | A mandatory flag argument parameter
 reqFlag
-  :: Read a
+  :: RawRead a
   => Key         -- ^ Flag name
   -> StdArgParam a
 reqFlag key = StdArgParam Mandatory Flag key (SingleArgParser $ readArg key)
 
 -- | An optional flag argument parameter
 optFlag
-  :: Read a
+  :: RawRead a
   => a                  -- ^ Default value
   -> Key                -- ^ Flag name
   -> StdArgParam a
 optFlag val key = StdArgParam (Optional val) Flag key (SingleArgParser $ readArg key)
 
 readArgs
-  :: Read a
+  :: RawRead a
   => Key
   -> b
   -> (b -> a -> b)
@@ -119,7 +150,7 @@ readArgs key initval accum args = case errors of
 
 -- | A parameter consuming all the remaining positional parameters
 posArgs
-  :: Read a
+  :: RawRead a
   => Key                -- ^ Param name
   -> b                  -- ^ Initial value
   -> (b -> a -> b)      -- ^ Accumulation function
@@ -129,7 +160,7 @@ posArgs key initval accum = StdArgParam
 
 -- | A mandatory flag argument parameter taking multiple arguments
 reqFlagArgs
-  :: Read a
+  :: RawRead a
   => Key                -- ^ Flag name
   -> b                  -- ^ Initial value
   -> (b -> a -> b)      -- ^ Accumulation function
@@ -139,7 +170,7 @@ reqFlagArgs key initval accum = StdArgParam
 
 -- | An optional flag argument parameter taking multiple arguments
 optFlagArgs
-  :: Read a
+  :: RawRead a
   => b                  -- ^ Default value
   -> Key                -- ^ Flag name
   -> b                  -- ^ Initial value

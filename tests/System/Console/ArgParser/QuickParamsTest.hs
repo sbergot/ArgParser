@@ -23,6 +23,18 @@ intReqParser = paramRun $ reqPos "test"
 
 prop_reqPosSuccess :: Positive Int -> Bool
 prop_reqPosSuccess = getIntSuccessProp intReqParser (\i -> [show i])
+
+strReqParser :: [String] -> ParseResult String
+strReqParser = paramRun $ reqPos "test"
+
+prop_strReqPosSuccess :: String -> Property
+prop_strReqPosSuccess = getStrSuccessProp strReqParser
+
+floatReqParser :: [String] -> ParseResult Float
+floatReqParser = paramRun $ reqPos "test"
+
+prop_floatReqPosSuccess :: Positive Float -> Bool
+prop_floatReqPosSuccess = getIntSuccessProp floatReqParser (\i -> [show i])
  
 test_reqPosFailure :: Assertion
 test_reqPosFailure = behavior intReqParser

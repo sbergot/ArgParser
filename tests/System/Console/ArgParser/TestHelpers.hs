@@ -50,12 +50,20 @@ behavior parser candidates = sequence_ assertions where
   assertions = zipWith ($) preds results
 
 getIntSuccessProp
-  :: ([String] -> ParseResult Int)
-  -> (Int -> [String])
-  -> Positive Int
+  :: (Show a, Num a, Eq a)
+  => ([String] -> ParseResult a)
+  -> (a -> [String])
+  -> Positive a
   -> Bool
 getIntSuccessProp parser repr = prop where
   prop (Positive i) = (Right i ==) $ parser $ repr i
+
+getStrSuccessProp
+  :: ([String] -> ParseResult String)
+  -> String
+  -> Property
+getStrSuccessProp parser = prop where
+  prop str = (take 1 str /= "-") ==> Right str == parser [str]
 
 getIntSumSuccessProp
   :: ([String] -> ParseResult Int)

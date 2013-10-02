@@ -54,7 +54,7 @@ mkSpecialFlag subapps = (parser, action) where
 data EmptyParam a = EmptyParam
 
 instance ParamSpec EmptyParam where
-  getParser _ = error "impossible"
+  getParser _ = Parser $ \args -> (Left "command not found", args)
   getParamDescr _ = []
 
 data CommandParam appT resT = CommandParam 

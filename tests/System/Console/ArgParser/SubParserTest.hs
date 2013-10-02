@@ -30,4 +30,5 @@ test_subparser :: Assertion
 test_subparser = behavior (`parseArgs` myTestParser)
   [ (willSucceed (MyCons1 1 2), ["A", "1", "2"])
   , (willSucceed (MyCons2 3), ["B", "3"])
+  , (willFail, ["3"])
   ]
