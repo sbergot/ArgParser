@@ -16,7 +16,9 @@ module.
 Values provided to 'parsedBy' and 'andBy' should be created with
 the following functions. Those are shortcuts based on data types defined in
 "System.Console.ArgParser.Params". The types are inferred. argparser will use
-'read' to convert the arguments to haskell values.
+'read' to convert the arguments to haskell values, except for strings
+which will be passed unmodified.
+
 
 Flags can be passed in long form (@--foo@) or short form (@-f@)
 You may also provide a prefix form such as @--fo@.

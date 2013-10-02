@@ -10,7 +10,7 @@ Portability :  portable
 Simple command line parsing library. This library provides
 a small combinator dsl to specify a parser for a datatype.
 Running the parser will automatically consume and convert
-command line arguments. Default special action such as 
+command line arguments. Default special action such as
 help/usage are automatically built from the parser specification.
 
 Here is a quick exemple. First, we need a datatype:
@@ -51,7 +51,8 @@ module System.Console.ArgParser (
   -- | Values provided to 'parsedBy' and 'andBy' should be created with
   --   the following functions. Those are shortcuts based on data types defined in
   --   "System.Console.ArgParser.Params". The types are inferred. argparser will use
-  --   'read' to convert the arguments to haskell values.
+  --   'read' to convert the arguments to haskell values, except for strings
+  --   which will be passed unmodified.
   --
   --   Flags can be passed in long form (@--foo@) or short form (@-f@)
   --   You may also provide a prefix form such as @--fo@.
@@ -62,7 +63,7 @@ module System.Console.ArgParser (
   --
   --   Note that single arg parameters need exactly one arg, and that multiple args
   --   parameters can have any number of args (0 included).
-  
+
   -- ** Parameters without args
   , boolFlag
   -- ** Parameters with one arg
@@ -71,7 +72,7 @@ module System.Console.ArgParser (
   , optFlag
   -- *** Positional
   , reqPos
-  , optPos 
+  , optPos
   -- ** Parameters with multiple args
   -- *** Flags
   , reqFlagArgs
