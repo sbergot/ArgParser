@@ -36,7 +36,7 @@ mkSubParser parsers = do
 -- | Same that "mkSubParser" but allows a custom name
 mkSubParserWithName :: String -> [(Arg, CmdLnInterface a)] -> CmdLnInterface a
 mkSubParserWithName name parsers = CmdLnInterface
-  parser cmdSpecialFlags name Nothing Nothing
+  parser cmdSpecialFlags name Nothing Nothing Nothing
  where
   parser = liftParam EmptyParam
   cmdSpecialFlags = command:defaultSpecialFlags

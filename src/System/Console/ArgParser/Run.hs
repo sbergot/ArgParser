@@ -20,6 +20,7 @@ module System.Console.ArgParser.Run (
   , mkDefaultApp
   , defaultSpecialFlags
   , setAppDescr
+  , setAppEpilog
   ) where
 
 import           Control.Monad
@@ -81,14 +82,14 @@ runSpecialFlags app args = loop $ specialFlags app where
 -- | default version and help special actions
 defaultSpecialFlags :: [SpecialFlag a]
 defaultSpecialFlags =
-  [ ( flagparser "help" "show this help message and exit"
+  [ ( flagparser Short "help" "show this help message and exit"
     , showParser $ showCmdLineAppUsage defaultFormat
     )
-  , ( flagparser "version" "print the program version and exit"
+  , ( flagparser Long "version" "print the program version and exit"
     , showParser showCmdLineVersion
     )
   ] where
-  flagparser key descr = liftParam $ FlagParam key id `Descr` descr
+  flagparser fmt key descr = liftParam $ FlagParam fmt key id `Descr` descr
   -- ignore args and show the result
   showParser action = const . Left . action
 
@@ -103,8 +104,12 @@ mkApp spec = liftM (mkDefaultApp spec) getProgName
 --   and with a name equal to the provided String.
 mkDefaultApp :: ParserSpec a -> String -> CmdLnInterface a
 mkDefaultApp spec progName = CmdLnInterface
-    spec defaultSpecialFlags progName Nothing Nothing
+    spec defaultSpecialFlags progName Nothing Nothing Nothing
 
 -- | Set the description of an interface
 setAppDescr :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppDescr app descr = app {getAppDescr = Just descr }
+
+-- | Set the description of an interface
+setAppEpilog :: CmdLnInterface a -> String -> CmdLnInterface a
+setAppEpilog app descr = app {getAppEpilog = Just descr }

@@ -100,7 +100,7 @@ test_basicFormat :: Assertion
 test_basicFormat = assertEqual
   ( unlines
   [ "test"
-  , "usage : test foo bar [-h] [-v]"
+  , "usage : test foo bar [-h] [--version]"
   , ""
   , "mandatory arguments:"
   , " foo"
@@ -108,7 +108,7 @@ test_basicFormat = assertEqual
   , ""
   , "optional arguments:"
   , " -h, --help                    show this help message and exit"
-  , " -v, --version                 print the program version and exit"
+  , " --version                     print the program version and exit"
   , ""
   ])
   $ showCmdLineAppUsage defaultFormat myTestParser
@@ -125,12 +125,15 @@ myDescrTestParser = mkDefaultApp (MyDescrTest
   `andBy` reqPos "bazazazazazazazazazazazazazazazazazazazazaz"
     `Descr` "the bazaz description")
   "test" `setAppDescr` "application description"
+ `setAppEpilog` "application epilog"
 
 test_DescrFormat :: Assertion
 test_DescrFormat = assertEqual
   ( unlines
   [ "test"
-  , "usage : test foo bar baz bazazazazazazazazazazazazazazazazazazazazaz [-h] [-v]"
+  , "usage : test foo bar baz" ++
+      " bazazazazazazazazazazazazazazazazazazazazaz" ++
+      " [-h] [--version]"
   , "application description"
   , ""
   , "mandatory arguments:"
@@ -143,7 +146,10 @@ test_DescrFormat = assertEqual
   , ""
   , "optional arguments:"
   , " -h, --help                    show this help message and exit"
-  , " -v, --version                 print the program version and exit"
+  , " --version                     print the program version and exit"
+  , ""
+  , ""
+  , "application epilog"
   , ""
   ])
   $ showCmdLineAppUsage defaultFormat myDescrTestParser
@@ -167,7 +173,7 @@ test_subparserFormat :: Assertion
 test_subparserFormat = assertEqual
   ( unlines
   [ "subparser"
-  , "usage : subparser {A,B} [-h] [-v]"
+  , "usage : subparser {A,B} [-h] [--version]"
   , ""
   , "commands arguments:"
   , " {A,B}"
@@ -176,7 +182,7 @@ test_subparserFormat = assertEqual
   , ""
   , "optional arguments:"
   , " -h, --help                    show this help message and exit"
-  , " -v, --version                 print the program version and exit"
+  , " --version                     print the program version and exit"
   , ""
   ])
   $ showCmdLineAppUsage defaultFormat mySubTestParser

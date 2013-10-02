@@ -50,15 +50,17 @@ showCmdLineVersion app =  appName ++ appVersion where
 --   foo bar [bay]
 -- @
 showCmdLineAppUsage :: CmdLineFormat -> CmdLnInterface a -> String
-showCmdLineAppUsage fmt app = intercalate "\n"
+showCmdLineAppUsage fmt app = (++ "\n\n") . trim $ intercalate "\n"
   [ showCmdLineVersion app
   , appUsage
   , appDescr
   , appParams
+  , appEpilog
   ]
  where
   _reflow = reflow $ maxDescrWidth fmt
   appDescr = fromMaybe "" ((++ "\n") . _reflow 0 <$> getAppDescr app)
+  appEpilog = fromMaybe "" (_reflow 0 <$> getAppEpilog app)
   paramdescrs = userDescr ++ specialDescr
   userDescr = getParserParams $ cmdArgParser app
   specialDescr = concatMap (getParserParams . fst) $ specialFlags app

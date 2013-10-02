@@ -105,7 +105,7 @@ readArg key arg = case rawRead arg of
 boolFlag
   :: Key            -- ^ flag key
   -> FlagParam Bool
-boolFlag key = FlagParam key id
+boolFlag key = FlagParam Short key id
 
 -- | A mandatory positional argument parameter
 reqPos

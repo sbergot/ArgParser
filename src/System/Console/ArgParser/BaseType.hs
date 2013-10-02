@@ -86,6 +86,7 @@ data CmdLnInterface a = CmdLnInterface
                                      --   Usally the binary name.
   , getAppVersion :: Maybe String    -- ^ Optional application version
   , getAppDescr   :: Maybe String    -- ^ Optional description
+  , getAppEpilog  :: Maybe String    -- ^ Optional epilog
   }
 
 instance Functor Parser where

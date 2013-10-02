@@ -16,6 +16,7 @@ module System.Console.ArgParser.Params (
    StdArgParam (..)
   -- ** Misc types
   , ArgSrc (..)
+  , FlagFormat (..)
   , ArgParser (..)
   , Optionality (..)
   , Key
@@ -36,10 +37,19 @@ import           System.Console.ArgParser.Parser
 --   or a positional argument.
 type Key = String
 
+-- | Specify the format of a flag
+data FlagFormat =
+  -- | Possible short format ie @-f@ or @--foo@ 
+  Short |
+  -- | Only long format ie @--foo@
+  Long
+
 deleteMany :: [String] -> Flags -> Flags
 deleteMany keys flags = foldl (flip M.delete) flags keys
 
-takeFlag :: String -> Flags -> (Maybe Args, Flags)
+type FlagParser = String -> Flags -> (Maybe Args, Flags)
+
+takeFlag :: FlagParser
 takeFlag key flags = (args, rest) where
   args = case mapMaybe lookupflag prefixes of
     [] -> Nothing
@@ -48,34 +58,56 @@ takeFlag key flags = (args, rest) where
   rest = deleteMany prefixes flags
   prefixes = drop 1 $ inits key
 
+takeLongFlag :: FlagParser
+takeLongFlag key flags = (args, rest) where
+  args = M.lookup key flags
+  rest = M.delete key flags
+  
+takeValidFlag :: FlagFormat -> FlagParser
+takeValidFlag fmt = case fmt of
+  Short -> takeFlag
+  Long  -> takeLongFlag
+
 -- | A simple command line flag.
 --   The parsing function will be passed True
 --   if the flag is present, if the flag is provided to
 --   the command line, and False otherwise.
 --   For a key @foo@, the flag can either be @--foo@ or @-f@
 data FlagParam a =
-  FlagParam Key (Bool -> a)
+  FlagParam FlagFormat Key (Bool -> a)
 
-flagformat :: String -> String
-flagformat key = shortfmt ++ ", --" ++ key where
+fullFlagformat :: FlagFormat -> String -> String
+fullFlagformat fmt key = case fmt of
+  Short -> shortfmt ++ ", " ++ longfmt
+  Long  -> longfmt
+ where
   shortfmt = shortflagformat key
+  longfmt = longflagformat key
+
+longflagformat :: String -> String
+longflagformat = ("--" ++)
 
 shortflagformat :: String -> String
 shortflagformat key = '-' : first where
   first = take 1 key
 
+shortestFlagFmt :: FlagFormat -> String -> String
+shortestFlagFmt fmt = case fmt of
+  Short -> shortflagformat
+  Long  -> longflagformat
+
 instance ParamSpec FlagParam where
-  getParser (FlagParam key parse) = Parser rawparse where
+  getParser (FlagParam fmt key parse) = Parser rawparse where
     rawparse (pos, flags) = case args of
       Just [] -> (Right $ parse True, (pos, rest))
       Just _  -> (Left "unexpected parameter(s)", (pos, rest))
       Nothing -> (Right $ parse False, (pos, rest))
      where
-      (args, rest) = takeFlag key flags
-  getParamDescr (FlagParam key _) = [ParamDescr
-    (const $ "[" ++ shortflagformat key ++ "]")
+      (args, rest) = takeValidFlag fmt key flags
+  getParamDescr (FlagParam fmt key _) = [ParamDescr
+    (const $ "[" ++ shortestFlagFmt fmt key ++ "]")
     "optional arguments"
-    (const $ flagformat key)
+    (const $ fullFlagformat fmt key)
     ""
     (map toUpper key)]
 
@@ -203,7 +235,7 @@ instance ParamSpec StdArgParam where
       value =  getValFormat parser metavar
     usage = getinputfmt shortflagformat
     format = case src of
-      Flag -> getinputfmt flagformat
+      Flag -> getinputfmt (fullFlagformat Short)
       Pos  -> id
     wrap Mandatory msg = msg
     wrap _         msg = "[" ++ msg ++ "]"
@@ -213,7 +245,7 @@ instance ParamSpec StdArgParam where
 choosesrc :: a -> a -> ArgSrc -> a
 choosesrc flag pos src = case src of
   Flag -> flag
-  Pos -> pos
+  Pos  -> pos
 
 missing :: Optionality a -> String -> ParseResult a
 missing opt msg = case opt of
