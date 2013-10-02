@@ -12,21 +12,26 @@ from the parser specification.
 
 Here is a quick example. First, we need a datatype:
 
-    data MyTest = MyTest Int Int
-      deriving (Show) -- we will print the values
+```haskell
+data MyTest = MyTest Int Int
+  deriving (Show) -- we will print the values
+```
 
 Then, we define a parser:
 
-    myTestParser :: ParserSpec MyTest
-    myTestParser = MyTest
-      \`parsedBy\` reqPos \"pos1\"
-      \`andBy\` optPos 0 \"pos2\"
-
+```haskell
+myTestParser :: ParserSpec MyTest
+myTestParser = MyTest
+  `parsedBy` reqPos "pos1"
+  `andBy` optPos 0 "pos2"
+```
 we proceed to build an interface and run it:
 
-    main = do
-      interface <- mkApp myTestParser
-      runApp interface print
+```haskell
+main = do
+  interface <- mkApp myTestParser
+  runApp interface print
+```
 
 Building this app will produce an executable `foo` which will behave like this:
 
