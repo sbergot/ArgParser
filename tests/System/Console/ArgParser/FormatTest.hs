@@ -113,25 +113,33 @@ test_basicFormat = assertEqual
   ])
   $ showCmdLineAppUsage defaultFormat myTestParser
 
-data MyDescrTest = MyDescrTest Int Int
+data MyDescrTest = MyDescrTest Int Int Int Int
   deriving (Eq, Show)
 
-myDescrTestParser :: CmdLnInterface MyTest
-myDescrTestParser = mkDefaultApp (MyTest
+myDescrTestParser :: CmdLnInterface MyDescrTest
+myDescrTestParser = mkDefaultApp (MyDescrTest
   `parsedBy` reqPos "foo" `Descr` "the foo description"
-  `andBy` reqPos "bar" `Descr` "the bar description")
+  `andBy` reqPos "bar" `Descr` "the bar description"
+  `andBy` reqPos "baz"
+    `Descr` "the baz description wich can be very very very very very very long"
+  `andBy` reqPos "bazazazazazazazazazazazazazazazazazazazazaz"
+    `Descr` "the bazaz description")
   "test" `setAppDescr` "application description"
 
 test_DescrFormat :: Assertion
 test_DescrFormat = assertEqual
   ( unlines
   [ "test"
-  , "usage : test foo bar [-h] [-v]"
+  , "usage : test foo bar baz bazazazazazazazazazazazazazazazazazazazazaz [-h] [-v]"
   , "application description"
   , ""
   , "mandatory arguments:"
   , " foo                           the foo description"
   , " bar                           the bar description"
+  , " baz                           the baz description wich can be"
+  , "                               very very very very very very long"
+  , " bazazazazazazazazazazazazazazazazazazazazaz"
+  , "                               the bazaz description"
   , ""
   , "optional arguments:"
   , " -h, --help                    show this help message and exit"

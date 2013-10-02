@@ -22,7 +22,7 @@ module System.Console.ArgParser.Format (
 
 import           Control.Applicative
 import           Data.Char                         (isSpace)
-import           Data.List                         (intercalate)
+import           Data.List                         (intercalate, unfoldr)
 import qualified Data.Map                          as M
 import           Data.Maybe
 import           System.Console.ArgParser.BaseType
@@ -31,11 +31,12 @@ import           System.Console.ArgParser.BaseType
 data CmdLineFormat = CmdLineFormat
   { maxKeyWidth    :: Int
   , keyIndentWidth :: Int
+  , maxDescrWidth  :: Int
   }
 
 -- | Default specification for the help layout
 defaultFormat :: CmdLineFormat
-defaultFormat = CmdLineFormat 30 1
+defaultFormat = CmdLineFormat 30 1 35
 
 -- | Prints the application name and version
 showCmdLineVersion :: CmdLnInterface a -> String
@@ -56,7 +57,8 @@ showCmdLineAppUsage fmt app = intercalate "\n"
   , appParams
   ]
  where
-  appDescr = fromMaybe "" ((++ "\n") <$> getAppDescr app)
+  _reflow = reflow $ maxDescrWidth fmt
+  appDescr = fromMaybe "" ((++ "\n") . _reflow 0 <$> getAppDescr app)
   paramdescrs = userDescr ++ specialDescr
   userDescr = getParserParams $ cmdArgParser app
   specialDescr = concatMap (getParserParams . fst) $ specialFlags app
@@ -91,4 +93,21 @@ showargformat fmt descr =
     sep = if padding > 0
       then replicate padding ' '
       else "\n" ++ keyindent ++ replicate _maxkeywidth ' '
-    descrtext = argDescr descr
+    indent = maxKeyWidth fmt + keyIndentWidth fmt
+    descrtext = reflow (maxDescrWidth fmt) indent $ argDescr descr
+
+reflow :: Int -> Int -> String -> String
+reflow width indent text = intercalate ('\n' : replicate indent ' ') _lines where
+  -- one space is appended to each line so we drop one char
+  _lines = map (drop 1) $ unfoldr takeOneLine $ words text
+  takeOneLine :: [String] -> Maybe (String, [String])
+  takeOneLine = loop 0 ""
+  loop currWidth accum rest = case rest of
+    [] -> case accum of
+      [] -> Nothing
+      _  -> Just (accum, rest)
+    word:_words -> let
+      newWidth = currWidth + 1 + length word
+      in if newWidth > width
+        then Just (accum, rest)
+        else loop newWidth (accum ++ ' ':word)  _words
