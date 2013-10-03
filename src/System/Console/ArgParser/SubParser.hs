@@ -40,15 +40,17 @@ mkSubParserWithName name parsers = CmdLnInterface
  where
   parser = liftParam EmptyParam
   cmdSpecialFlags = command:defaultSpecialFlags
-  command = mkSpecialFlag parsers
+  command = mkSpecialFlag name parsers
 
-mkSpecialFlag :: [(Arg, CmdLnInterface a)] -> SpecialFlag a
-mkSpecialFlag subapps = (parser, action) where
+mkSpecialFlag :: String -> [(Arg, CmdLnInterface a)] -> SpecialFlag a
+mkSpecialFlag topname subapps = (parser, action) where
   parser = liftParam $ CommandParam cmdMap id
   action _ (posargs, flagargs) =
     case listToMaybe posargs >>= flip M.lookup cmdMap of
       Nothing     -> error "impossible"
-      Just subapp -> parseNiceArgs (drop 1 posargs, flagargs) subapp
+      Just subapp -> parseNiceArgs
+        (drop 1 posargs, flagargs)
+        (subapp `setAppName` (topname ++ " " ++ getAppName subapp))
   cmdMap = M.fromList subapps
 
 data EmptyParam a = EmptyParam

@@ -44,6 +44,16 @@ Building this app will produce an executable `foo` which will behave like this:
     MyTest 1 2
     $ foo 3
     MyTest 3 0
-    
-    
+    $ foo -hhscmd
+    usage : hscmd pos1 [pos2] [-h] [--version]
+
+    mandatory arguments:
+     pos1
+
+    optional arguments:
+     pos2
+     -h, --help                    show this help message and exit
+     --version                     print the program version and exit
+
+
  For more information, please visit <haskage link>.

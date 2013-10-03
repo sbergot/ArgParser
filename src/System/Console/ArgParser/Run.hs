@@ -21,6 +21,7 @@ module System.Console.ArgParser.Run (
   , defaultSpecialFlags
   , setAppDescr
   , setAppEpilog
+  , setAppName
   ) where
 
 import           Control.Monad
@@ -113,3 +114,7 @@ setAppDescr app descr = app {getAppDescr = Just descr }
 -- | Set the description of an interface
 setAppEpilog :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppEpilog app descr = app {getAppEpilog = Just descr }
+
+-- | Set the name of an interface
+setAppName :: CmdLnInterface a -> String -> CmdLnInterface a
+setAppName app descr = app {getAppName = descr }
