@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/sbergot/ArgParser.png)](https://travis-ci.org/sbergot/ArgParser)
+<a href="https://travis-ci.org/sbergot/ArgParser">
+  <img src="https://travis-ci.org/sbergot/ArgParser.png" alt="Build Status" style="float : right" />
+</a>
 
 ArgParser
 =========
