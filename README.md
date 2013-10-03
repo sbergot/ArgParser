@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/sbergot/ArgParser.png)](https://travis-ci.org/sbergot/ArgParser)
+<p style="float : right">
+  [![Build Status](https://travis-ci.org/sbergot/ArgParser.png)](https://travis-ci.org/sbergot/ArgParser)
+</p>
 
 ArgParser
 =========
