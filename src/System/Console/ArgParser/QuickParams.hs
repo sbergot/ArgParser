@@ -57,7 +57,12 @@ import           Data.List                       (unfoldr)
 import           Control.Applicative
 import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Params
-import           Text.Read                         (readMaybe)
+
+-- | redefined here for compatibility purpose
+readMaybe :: (Read a) => String -> Maybe a
+readMaybe s = case reads s of
+              [(x, "")] -> Just x
+              _ -> Nothing
 
 class RawRead a where
   rawParse :: String -> Maybe (a, String)
