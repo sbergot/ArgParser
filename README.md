@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sbergot/ArgParser.png)](https://travis-ci.org/sbergot/ArgParser)
+
 ArgParser
 =========
 
