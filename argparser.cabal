@@ -35,7 +35,7 @@ source-repository head
 test-suite TestsHTF
   type:            exitcode-stdio-1.0
   main-is:         TestsHTF.hs
-  ghc-options:     -Wall -rtsopts -fhpc
+  ghc-options:     -Wall -rtsopts
   build-depends:   
                   base >= 4,
                   HTF > 0.9,
