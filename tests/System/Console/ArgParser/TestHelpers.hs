@@ -6,7 +6,7 @@ import System.Console.ArgParser.Parser
 import System.Console.ArgParser.Run
 
 import Test.Framework
-import Test.HUnit
+import qualified Test.HUnit as H
 
 
 paramRun
@@ -25,7 +25,7 @@ specRun
 specRun param args = parseArgs args $
   mkDefaultApp param ""
 
-willFail :: Show a => ParseResult a -> Assertion
+willFail :: Show a => ParseResult a -> H.Assertion
 willFail res = case res  of
   Left _    -> return ()
   Right val -> assertFailure $
@@ -35,15 +35,15 @@ willSucceed
   :: (Show a, Eq a)
   => a
   -> ParseResult a
-  -> Assertion
+  -> H.Assertion
 willSucceed val res = case res  of
   Left msg     -> assertFailure $ "\nparsing failed: " ++ msg
   Right resval -> assertEqual val resval
 
 behavior
   :: ([String] -> ParseResult a)
-  -> [(ParseResult a -> Assertion, [String])]
-  -> Assertion
+  -> [(ParseResult a -> H.Assertion, [String])]
+  -> H.Assertion
 behavior parser candidates = sequence_ assertions where
   (preds, args) = unzip candidates
   results = map parser args
