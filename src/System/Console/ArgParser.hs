@@ -104,8 +104,7 @@ import           System.Console.ArgParser.Run         (mkApp, mkDefaultApp, runA
 import           System.Console.ArgParser.SubParser   (mkSubParser)
 
 
--- TODO documentation of the top level module
--- TODO i)mprove QuickParams doc with failure/success cases
+-- TODO copy the first example from the python argparse doc
 
 {- $subparser
 
