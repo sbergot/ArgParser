@@ -7,13 +7,12 @@ Maintainer  :  simon.bergot@gmail.com
 Stability   :  unstable
 Portability :  portable
 
-Simple command line parsing library. This library provides
-a small combinator dsl to specify a parser for a datatype.
-Running the parser will automatically consume and convert
-command line arguments. Default special action such as
+Simple command line parsing library. This library provides a small combinator
+dsl to specify a parser for a datatype. Running the parser will automatically
+consume and convert command line arguments. Default special action such as
 help/usage are automatically built from the parser specification.
 
-Here is a quick exemple. First, we need a datatype:
+Here is a quick example. First, we need a datatype:
 
 @
 data MyTest = MyTest Int Int
@@ -68,7 +67,7 @@ module System.Console.ArgParser (
   , mkDefaultApp
   -- ** Adding descriptions
   -- $description
-  , Descr (..)
+  , Descr (Descr)
   , setAppDescr
   , setAppEpilog
   -- ** Sub commands
@@ -98,7 +97,7 @@ module System.Console.ArgParser (
   , module System.Console.ArgParser.BaseType
   ) where
 import           System.Console.ArgParser.BaseType
-import           System.Console.ArgParser.Params      (Descr (..))
+import           System.Console.ArgParser.Params      (Descr (Descr))
 import           System.Console.ArgParser.Parser      (andBy, parsedBy)
 import           System.Console.ArgParser.QuickParams
 import           System.Console.ArgParser.Run         (mkApp, mkDefaultApp,
@@ -235,5 +234,7 @@ as @Int@)
 
 Note that single arg parameters need exactly one arg, and that multiple args
 parameters can have any number of args (0 included).
+
+Those functions are all defined in "System.Console.ArgParser.QuickParams".
 
 -}

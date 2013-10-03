@@ -12,13 +12,10 @@ of "System.Console.EasyConsole.Params" versions. If you
 cannot find a parameter fitting your needs, you should check this
 module.
 
-
 Values provided to 'parsedBy' and 'andBy' should be created with
-the following functions. Those are shortcuts based on data types defined in
-"System.Console.ArgParser.Params". The types are inferred. argparser will use
-'read' to convert the arguments to haskell values, except for strings
+the following functions. The types are inferred. ArgParser will use
+@readMaybe@ to convert the arguments to haskell values, except for strings
 which will be passed unmodified.
-
 
 Flags can be passed in long form (@--foo@) or short form (@-f@)
 You may also provide a prefix form such as @--fo@.
@@ -58,19 +55,22 @@ import           Control.Applicative
 import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Params
 
--- | redefined here for compatibility purpose
+-- | Same function as Text.Read.readMaybe. It is 
+--   redefined here for compatibility purpose
 readMaybe :: (Read a) => String -> Maybe a
 readMaybe s = case reads s of
               [(x, "")] -> Just x
               _ -> Nothing
 
+-- | A typeclass used to define a way a converting
+--   string to specific types. It is similar to read.
+--   The main difference is that strings are parsed
+--   without quotes.
+--
+-- > rawRead "foo" :: Maybe String == Just "foo"
 class RawRead a where
   rawParse :: String -> Maybe (a, String)
 
--- | A class similar to read. The main difference
---   is that strings are parsed without quotes, and 
---
--- > rawRead "foo" :: Maybe String == Just "foo"
 instance RawRead Char where
   rawParse s = case s of
     [] -> Nothing

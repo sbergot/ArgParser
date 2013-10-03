@@ -26,7 +26,7 @@ class ParamSpec spec where
   getParser :: spec res -> Parser res
   getParamDescr :: spec res -> [ParamDescr]
 
--- | Converts any "ParamSpec" to a "ParserSpec"
+-- | Converts any 'ParamSpec' to a 'ParserSpec'
 liftParam :: ParamSpec spec => spec res -> ParserSpec res
 liftParam param = ParserSpec
   (getParamDescr param)
@@ -37,7 +37,7 @@ instance ParamSpec ParserSpec where
   getParamDescr = getParserParams
 
 infixl 1 `andBy`
--- | Build a parser from a parser and a ParamSpec
+-- | Build a parser from a parser and a 'ParamSpec'
 --
 -- > MyApp `parsedBy` myparamspec `andBy` myotherparamspec
 andBy
@@ -48,7 +48,7 @@ andBy
 andBy parser param = parser <*> liftParam param
 
 infixl 1 `parsedBy`
--- | Build a parser from a type constructor and a ParamSpec
+-- | Build a parser from a type constructor and a 'ParamSpec'
 --
 -- > MyApp `parsedBy` myparamspec
 parsedBy
