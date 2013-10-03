@@ -76,6 +76,7 @@ module System.Console.ArgParser (
   , mkSubParser
   -- * Running a parser
   , runApp
+  , parseArgs
   -- * Creating parameters
   -- $parameters
   -- ** Parameters without args
@@ -100,7 +101,10 @@ import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Params      (Descr (..))
 import           System.Console.ArgParser.Parser      (andBy, parsedBy)
 import           System.Console.ArgParser.QuickParams
-import           System.Console.ArgParser.Run         (mkApp, mkDefaultApp, runApp, setAppDescr, setAppEpilog)
+import           System.Console.ArgParser.Run         (mkApp, mkDefaultApp,
+                                                       parseArgs, runApp,
+                                                       setAppDescr,
+                                                       setAppEpilog)
 import           System.Console.ArgParser.SubParser   (mkSubParser)
 
 
