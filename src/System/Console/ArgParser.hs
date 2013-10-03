@@ -88,5 +88,6 @@ import           System.Console.ArgParser.QuickParams
 import           System.Console.ArgParser.Run         (mkApp, runApp)
 import           System.Console.ArgParser.SubParser   (mkSubParser)
 
+
 -- TODO documentation of the top level module
 -- TODO improve QuickParams doc with failure/success cases
