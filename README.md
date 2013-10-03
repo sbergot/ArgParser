@@ -1,6 +1,7 @@
-<a href="https://travis-ci.org/sbergot/ArgParser">
-  <img src="https://travis-ci.org/sbergot/ArgParser.png" alt="Build Status" style="float : right" />
+<a href="https://travis-ci.org/sbergot/ArgParser" style="float : right">
+  <img src="https://travis-ci.org/sbergot/ArgParser.png" alt="Build Status" />
 </a>
+
 
 ArgParser
 =========
