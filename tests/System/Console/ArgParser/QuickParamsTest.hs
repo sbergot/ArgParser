@@ -5,11 +5,11 @@ import System.Console.ArgParser.BaseType
 
 import System.Console.ArgParser.TestHelpers
 import Test.Framework
-import Test.HUnit
+import qualified Test.HUnit as H
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 
-test_boolFlag :: Assertion
+test_boolFlag :: H.Assertion
 test_boolFlag = behavior (paramRun (boolFlag "test"))
   [ (willSucceed True  ,["--test"])
   , (willSucceed True  ,["--te"])
@@ -36,7 +36,7 @@ floatReqParser = paramRun $ reqPos "test"
 prop_floatReqPosSuccess :: Positive Float -> Bool
 prop_floatReqPosSuccess = getIntSuccessProp floatReqParser (\i -> [show i])
  
-test_reqPosFailure :: Assertion
+test_reqPosFailure :: H.Assertion
 test_reqPosFailure = behavior intReqParser
   [ (willFail, ["--test"])
   , (willFail, ["foo"])
@@ -49,7 +49,7 @@ intOptParser = paramRun $ optPos 0 "test"
 prop_optPosSuccess :: Positive Int -> Bool
 prop_optPosSuccess = getIntSuccessProp intOptParser (\i -> [show i])
  
-test_optPosFailure :: Assertion
+test_optPosFailure :: H.Assertion
 test_optPosFailure = behavior intOptParser
   [ (willFail, ["foo"])
   , (willSucceed 0, [])
@@ -61,7 +61,7 @@ intReqFlagParser = paramRun $ reqFlag "test"
 prop_reqFlagSuccess :: Positive Int -> Bool
 prop_reqFlagSuccess = getIntSuccessProp intReqFlagParser (\i -> ["-t", show i])
  
-test_reqFlagFailure :: Assertion
+test_reqFlagFailure :: H.Assertion
 test_reqFlagFailure = behavior intReqFlagParser
   [ (willFail, ["--test"])
   , (willFail, ["--test", "foo"])
@@ -73,7 +73,7 @@ intOptFlagParser = paramRun $ optFlag 0 "test"
 prop_optFlagSuccess :: Positive Int -> Bool
 prop_optFlagSuccess = getIntSuccessProp intOptFlagParser (\i -> ["-t", show i])
  
-test_optFlagFailure :: Assertion
+test_optFlagFailure :: H.Assertion
 test_optFlagFailure = behavior intOptFlagParser
   [ (willFail, ["--test"])
   , (willFail, ["--test", "foo"])
@@ -86,7 +86,7 @@ intOptArgsParser = paramRun $ posArgs "test" 0 (+)
 prop_optPosArgsSuccess :: NonEmptyList (Positive Int) -> Bool
 prop_optPosArgsSuccess = getIntSumSuccessProp intOptArgsParser []
  
-test_optPosArgsFailure :: Assertion
+test_optPosArgsFailure :: H.Assertion
 test_optPosArgsFailure = behavior intOptArgsParser
   [ (willFail, ["foo"])
   , (willSucceed 0, [])
@@ -99,7 +99,7 @@ prop_reqFlagArgsSuccess :: NonEmptyList (Positive Int) -> Bool
 prop_reqFlagArgsSuccess =
   getIntSumSuccessProp intReqFlagArgsParser ["-t"]
  
-test_reqFlagArgsFailure :: Assertion
+test_reqFlagArgsFailure :: H.Assertion
 test_reqFlagArgsFailure = behavior intReqFlagArgsParser
   [ (willFail, ["--test", "foo"])
   , (willFail, [])
@@ -113,7 +113,7 @@ prop_optFlagArgsSuccess :: NonEmptyList (Positive Int) -> Bool
 prop_optFlagArgsSuccess =
   getIntSumSuccessProp intOptFlagArgsParser ["-t"]
  
-test_optFlagArgsFailure :: Assertion
+test_optFlagArgsFailure :: H.Assertion
 test_optFlagArgsFailure = behavior intOptFlagArgsParser
   [ (willFail, ["--test", "foo"])
   , (willSucceed 0, ["--test"])

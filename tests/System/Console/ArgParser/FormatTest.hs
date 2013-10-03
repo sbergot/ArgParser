@@ -10,7 +10,7 @@ import System.Console.ArgParser.SubParser
 import System.Console.ArgParser.QuickParams
 
 import Test.Framework
-import Test.HUnit
+import qualified Test.HUnit as H
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 
@@ -42,47 +42,47 @@ checkFmt
   => spec a
   -> String
   -> String
-  -> Assertion
+  -> H.Assertion
 checkFmt param shortUsage longUsage = do
   assertEqual shortUsage $ showUsage param
   assertEqual longUsage $ showArgFmt param
 
-test_boolFlagUsage :: Assertion
+test_boolFlagUsage :: H.Assertion
 test_boolFlagUsage = checkFmt (boolFlag "foo")
   "[-f]"
   "-f, --foo"
 
-test_reqFlagUsage :: Assertion
+test_reqFlagUsage :: H.Assertion
 test_reqFlagUsage = checkFmt (reqFlag "foo" :: StdArgParam Int)
   "-f  FOO"
   "-f, --foo  FOO"
 
-test_reqPosUsage :: Assertion
+test_reqPosUsage :: H.Assertion
 test_reqPosUsage = checkFmt (reqPos "foo" :: StdArgParam Int)
   "foo"
   "foo"
 
-test_optFlagUsage :: Assertion
+test_optFlagUsage :: H.Assertion
 test_optFlagUsage = checkFmt (optFlag 0 "foo" :: StdArgParam Int)
   "[-f  FOO]"
   "-f, --foo  FOO"
 
-test_optPosUsage :: Assertion
+test_optPosUsage :: H.Assertion
 test_optPosUsage = checkFmt (optPos 0 "foo" :: StdArgParam Int)
   "[foo]"
   "foo"
 
-test_reqFlagArgsUsage :: Assertion
+test_reqFlagArgsUsage :: H.Assertion
 test_reqFlagArgsUsage = checkFmt (reqFlagArgs "foo" 0 (+) :: StdArgParam Int)
   "-f  [FOO...]"
   "-f, --foo  [FOO...]"
 
-test_optFlagArgsUsage :: Assertion
+test_optFlagArgsUsage :: H.Assertion
 test_optFlagArgsUsage = checkFmt (optFlagArgs 0 "foo" 0 (+) :: StdArgParam Int)
   "[-f  [FOO...]]"
   "-f, --foo  [FOO...]"
 
-test_posArgsUsage :: Assertion
+test_posArgsUsage :: H.Assertion
 test_posArgsUsage = checkFmt (posArgs "foo" 0 (+) :: StdArgParam Int)
   "[foo...]"
   "foo"
@@ -96,7 +96,7 @@ myTestParser = mkDefaultApp (MyTest
   `andBy` reqPos "bar")
   "test"
 
-test_basicFormat :: Assertion
+test_basicFormat :: H.Assertion
 test_basicFormat = assertEqual
   ( unlines
   [ "test"
@@ -127,7 +127,7 @@ myDescrTestParser = mkDefaultApp (MyDescrTest
   "test" `setAppDescr` "application description"
  `setAppEpilog` "application epilog"
 
-test_DescrFormat :: Assertion
+test_DescrFormat :: H.Assertion
 test_DescrFormat = assertEqual
   ( unlines
   [ "test"
@@ -169,7 +169,7 @@ mySubTestParser = mkSubParserWithName "subparser"
         "B" `setAppDescr` "B sub description") 
   ]
 
-test_subparserFormat :: Assertion
+test_subparserFormat :: H.Assertion
 test_subparserFormat = assertEqual
   ( unlines
   [ "subparser"

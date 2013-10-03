@@ -9,7 +9,7 @@ import System.Console.ArgParser.Parser
 import System.Console.ArgParser.TestHelpers
 
 import Test.Framework
-import Test.HUnit
+import qualified Test.HUnit as H
 
 {-# ANN module "HLint: ignore Use camelCase" #-}
 
@@ -26,7 +26,7 @@ myTestParser = mkSubParserWithName "subparser"
     (MyCons2 `parsedBy` reqPos "pos1") "B") 
   ]
 
-test_subparser :: Assertion
+test_subparser :: H.Assertion
 test_subparser = behavior (`parseArgs` myTestParser)
   [ (willSucceed (MyCons1 1 2), ["A", "1", "2"])
   , (willSucceed (MyCons2 3), ["B", "3"])
