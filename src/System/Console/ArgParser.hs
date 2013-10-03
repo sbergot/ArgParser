@@ -93,7 +93,7 @@ module System.Console.ArgParser (
   , optFlagArgs
   -- *** Positionnal
   , posArgs
-  -- * Base types
+  -- * Common types
   , module System.Console.ArgParser.BaseType
   ) where
 import           System.Console.ArgParser.BaseType
