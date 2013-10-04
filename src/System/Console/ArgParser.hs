@@ -12,26 +12,20 @@ dsl to specify a parser for a datatype. Running the parser will automatically
 consume and convert command line arguments. Default special action such as
 help/usage are automatically built from the parser specification.
 
-Here is a quick example. First, we need a datatype:
+Here is a quick example. 
 
 @
-data MyTest = MyTest Int Int
+data MyTest =  -- First, we need a datatype
+  MyTest Int Int
   deriving (Show) -- we will print the values
-@
 
-Then, we define a parser:
-
-@
-myTestParser :: ParserSpec MyTest
+myTestParser -- Then, we define a parser 
+  :: ParserSpec MyTest
 myTestParser = MyTest
   \`parsedBy\` reqPos \"pos1\"
   \`andBy\` optPos 0 \"pos2\"
-@
 
-we proceed to build an interface and run it:
-
-@
-main = do
+main = do -- We proceed to build an interface and run it:
   interface <- mkApp myTestParser
   runApp interface print
 @

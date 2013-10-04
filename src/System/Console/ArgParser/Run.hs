@@ -111,7 +111,7 @@ mkDefaultApp spec progName = CmdLnInterface
 setAppDescr :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppDescr app descr = app {getAppDescr = Just descr }
 
--- | Set the description of an interface
+-- | Set the bottom text of an interface
 setAppEpilog :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppEpilog app descr = app {getAppEpilog = Just descr }
 
