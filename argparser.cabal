@@ -1,5 +1,5 @@
 name:           argparser
-version:        0.3.1
+version:        0.3.2
 cabal-version:  >=1.8
 build-type:     Simple
 author:         Simon Bergot <simon.bergot@gmail.com>
@@ -30,7 +30,7 @@ library
 
 source-repository head
   type:      git
-  location:  https://github.com/sbergot/EasyConsole
+  location:  https://github.com/sbergot/ArgParser 
 
 test-suite TestsHTF
   type:            exitcode-stdio-1.0
