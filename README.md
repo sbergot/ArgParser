@@ -57,4 +57,4 @@ Building this app will produce an executable `foo` which will behave like this:
      --version                     print the program version and exit
 
 
- For more information, please visit --hakage link--.
+ For more information, please visit http://hackage.haskell.org/package/argparser-0.3.2/docs/System-Console-ArgParser.html .
