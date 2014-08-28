@@ -25,9 +25,7 @@ myTestParser = MyTest
   \`parsedBy\` reqPos \"pos1\"
   \`andBy\` optPos 0 \"pos2\"
 
-main = do -- We proceed to build an interface and run it:
-  interface <- mkApp myTestParser
-  runApp interface print
+main = withParseResult myTestParser print
 @
 
 Building this app will produce an executable `foo` which will behave like this:
