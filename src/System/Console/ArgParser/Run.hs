@@ -12,7 +12,8 @@ Functions used to build and run command line applications.
 
 module System.Console.ArgParser.Run (
   -- * Running a parser
-    runApp
+    withParseResult
+  , runApp
   , parseArgs
   , parseNiceArgs
   -- * Building a parser
@@ -46,6 +47,17 @@ runApp
 runApp appspec appfun = do
   args <- getArgs
   either putStrLn appfun $ parseArgs args appspec
+
+-- | Runs an apllication with the user provided arguments.
+--   It is a shorter way of calling `mkApp` and `runApp`
+withParseResult
+  :: ParserSpec a
+  -> (a -> IO ())
+  -> IO ()
+withParseResult parser app = do
+  interface <- mkApp parser
+  runApp interface app
+
 
 -- | Parse the arguments with the parser
 --   provided to the function.

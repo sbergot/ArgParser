@@ -12,14 +12,14 @@ dsl to specify a parser for a datatype. Running the parser will automatically
 consume and convert command line arguments. Default special action such as
 help/usage are automatically built from the parser specification.
 
-Here is a quick example. 
+Here is a quick example.
 
 @
 data MyTest =  -- First, we need a datatype
   MyTest Int Int
   deriving (Show) -- we will print the values
 
-myTestParser -- Then, we define a parser 
+myTestParser -- Then, we define a parser
   :: ParserSpec MyTest
 myTestParser = MyTest
   \`parsedBy\` reqPos \"pos1\"
@@ -68,6 +68,7 @@ module System.Console.ArgParser (
   -- $subparser
   , mkSubParser
   -- * Running a parser
+  , withParseResult
   , runApp
   , parseArgs
   -- * Creating parameters
@@ -97,7 +98,8 @@ import           System.Console.ArgParser.QuickParams
 import           System.Console.ArgParser.Run         (mkApp, mkDefaultApp,
                                                        parseArgs, runApp,
                                                        setAppDescr,
-                                                       setAppEpilog)
+                                                       setAppEpilog,
+                                                       withParseResult)
 import           System.Console.ArgParser.SubParser   (mkSubParser)
 
 

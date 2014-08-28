@@ -18,12 +18,12 @@ single :: [a] -> a
 single xs = case xs of
   [x] -> x
   _   -> error "single on non-single list"
-  
+
 paramDescr
   :: ParamSpec spec
   => spec a
   -> ParamDescr
-paramDescr = single . getParamDescr  
+paramDescr = single . getParamDescr
 
 showUsage
   :: ParamSpec spec
@@ -113,6 +113,29 @@ test_basicFormat = assertEqual
   ])
   $ showCmdLineAppUsage defaultFormat myTestParser
 
+myTestVersionParser :: CmdLnInterface MyTest
+myTestVersionParser = (mkDefaultApp (MyTest
+  `parsedBy` reqPos "foo"
+  `andBy` reqPos "bar")
+  "test") { getAppVersion = Just "version" }
+
+test_versionFormat :: H.Assertion
+test_versionFormat = assertEqual
+  ( unlines
+  [ "test version"
+  , "usage : test foo bar [-h] [--version]"
+  , ""
+  , "mandatory arguments:"
+  , " foo"
+  , " bar"
+  , ""
+  , "optional arguments:"
+  , " -h, --help                    show this help message and exit"
+  , " --version                     print the program version and exit"
+  , ""
+  ])
+  $ showCmdLineAppUsage defaultFormat myTestVersionParser
+
 data MyDescrTest = MyDescrTest Int Int Int Int
   deriving (Eq, Show)
 
@@ -166,7 +189,7 @@ mySubTestParser = mkSubParserWithName "subparser"
         "A" `setAppDescr` "A sub description")
   , ("B", mkDefaultApp
       (MyCons2 `parsedBy` reqPos "pos1")
-        "B" `setAppDescr` "B sub description") 
+        "B" `setAppDescr` "B sub description")
   ]
 
 test_subparserFormat :: H.Assertion

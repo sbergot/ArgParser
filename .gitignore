@@ -3,3 +3,7 @@ dist
 *~
 /TestsHTF.exe.tix
 .hpc
+.settings
+.HTF
+.cabal-sandbox
+cabal.sandbox.config

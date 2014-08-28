@@ -39,7 +39,7 @@ type Key = String
 
 -- | Specify the format of a flag
 data FlagFormat =
-  -- | Possible short format ie @-f@ or @--foo@ 
+  -- | Possible short format ie @-f@ or @--foo@
   Short |
   -- | Only long format ie @--foo@
   Long
@@ -62,7 +62,7 @@ takeLongFlag :: FlagParser
 takeLongFlag key flags = (args, rest) where
   args = M.lookup key flags
   rest = M.delete key flags
-  
+
 takeValidFlag :: FlagFormat -> FlagParser
 takeValidFlag fmt = case fmt of
   Short -> takeFlag

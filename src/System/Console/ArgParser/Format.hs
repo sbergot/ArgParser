@@ -42,7 +42,7 @@ defaultFormat = CmdLineFormat 30 1 35
 showCmdLineVersion :: CmdLnInterface a -> String
 showCmdLineVersion app =  appName ++ appVersion where
   appName = getAppName app
-  appVersion = fromMaybe "" $ getAppVersion app
+  appVersion = maybe "" (" " ++) $ getAppVersion app
 
 -- | Prints a long usage such as
 --
