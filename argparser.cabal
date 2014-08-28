@@ -1,5 +1,5 @@
 name:           argparser
-version:        0.3.2
+version:        0.3.3
 cabal-version:  >=1.8
 build-type:     Simple
 author:         Simon Bergot <simon.bergot@gmail.com>
@@ -11,13 +11,13 @@ synopsis:       Command line parsing framework for console applications
 description:    Provides a combinator library for defining a command line parser.
 license-file:   LICENSE
 
-library 
-  build-depends:    
+library
+  build-depends:
                    base >= 4.0 && < 5,
                    containers
   hs-source-dirs:   src
   ghc-options:      -Wall
-  exposed-modules:  
+  exposed-modules:
                     System.Console.ArgParser,
                     System.Console.ArgParser.ArgsProcess,
                     System.Console.ArgParser.BaseType,
@@ -30,26 +30,25 @@ library
 
 source-repository head
   type:      git
-  location:  https://github.com/sbergot/ArgParser 
+  location:  https://github.com/sbergot/ArgParser
 
 test-suite TestsHTF
   type:            exitcode-stdio-1.0
   main-is:         TestsHTF.hs
   ghc-options:     -Wall -rtsopts
-  build-depends:   
+  build-depends:
                   base >= 4,
                   HTF > 0.9,
                   containers,
                   HUnit,
                   argparser
-  other-modules:   
+  other-modules:
                    System.Console.ArgParser.ArgsProcessTest,
                    System.Console.ArgParser.FormatTest,
                    System.Console.ArgParser.ParserTest,
                    System.Console.ArgParser.QuickParamsTest,
                    System.Console.ArgParser.SubParserTest,
                    System.Console.ArgParser.TestHelpers
-  hs-source-dirs:  
+  hs-source-dirs:
                   tests,
                   src
-

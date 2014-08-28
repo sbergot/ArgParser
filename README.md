@@ -30,12 +30,11 @@ myTestParser = MyTest
   `parsedBy` reqPos "pos1"
   `andBy` optPos 0 "pos2"
 ```
-we proceed to build an interface and run it:
+we can now run a `MyTest -> IO ()` value. It will either perform the
+action with the parse result, or display an error message:
 
 ```haskell
-main = do
-  interface <- mkApp myTestParser
-  runApp interface print
+main = withParseResult myTestParser print
 ```
 
 Building this app will produce an executable `foo` which will behave like this:
@@ -57,4 +56,5 @@ Building this app will produce an executable `foo` which will behave like this:
      --version                     print the program version and exit
 
 
- For more information, please visit http://hackage.haskell.org/package/argparser-0.3.2/docs/System-Console-ArgParser.html .
+For more information, please visit
+http://hackage.haskell.org/package/argparser-0.3.2/docs/System-Console-ArgParser.html .
