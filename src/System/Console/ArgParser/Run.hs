@@ -34,8 +34,10 @@ import           System.Console.ArgParser.Params
 import           System.Console.ArgParser.Parser
 import           System.Environment
 
-runParser :: Parser a -> NiceArgs -> ParseResult a
-runParser (Parser parse) args = fst $ parse args
+runParser :: Parser a -> NiceArgs -> (Bool, ParseResult a)
+runParser (Parser parse) args = let
+  (res, rest) = parse args
+  in (rest == emptyArgs, res)
 
 -- | Runs a command line application with the
 --   user provided arguments. If the parsing succeeds,
@@ -78,7 +80,9 @@ parseNiceArgs
 parseNiceArgs niceargs appspec = fromMaybe normalprocess specialprocess
  where
   parser = getParserFun $ cmdArgParser appspec
-  normalprocess = runParser parser niceargs
+  normalprocess = case runParser parser niceargs of
+    (True, res) -> res
+    (False, _)  -> Left "too many arguments"
   specialprocess = runSpecialFlags appspec niceargs
 
 runSpecialFlags :: CmdLnInterface a -> NiceArgs -> Maybe (ParseResult a)
@@ -87,7 +91,7 @@ runSpecialFlags app args = loop $ specialFlags app where
     []                   -> Nothing
     (parse, action):rest -> runSpecialAction parse action rest
   runSpecialAction parse action other = case specialParseResult of
-    Right True -> Just $ action app args
+    (_, Right True) -> Just $ action app args
     _          -> loop other
    where
     specialParseResult = runParser (getParserFun parse) args

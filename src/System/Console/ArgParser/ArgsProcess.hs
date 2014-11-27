@@ -36,7 +36,7 @@ getWord :: Token -> Arg
 getWord (Token _ word) = word
 
 tokenize :: Args -> [Token]
-tokenize = concatMap arg2token where
+tokenize = (concatMap arg2token) . (takeWhile (/= "--")) where
   arg2token :: Arg -> [Token]
   arg2token arg = case arg of
     '-':'-':word -> [Token Flag word]

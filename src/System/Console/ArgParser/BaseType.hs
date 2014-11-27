@@ -13,7 +13,7 @@ Base types shared by several EasyConsole modules.
 module System.Console.ArgParser.BaseType where
 
 import           Control.Applicative     ((<*>), Applicative, pure)
-import qualified Data.Map as M (Map)
+import qualified Data.Map as M (Map, empty)
 
 -- | Simple command line arg
 type Arg   = String
@@ -37,6 +37,9 @@ data ParamDescr = ParamDescr
   , argDescr    :: String -- ^ Description of the parameter
   , argMetaVar  :: String -- ^ Description of the parameter in the usage
   }
+
+emptyArgs :: NiceArgs
+emptyArgs = ([], M.empty)
 
 -- | Returns a short description of the input format
 --   of a parameter.

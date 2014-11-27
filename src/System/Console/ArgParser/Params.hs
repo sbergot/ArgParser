@@ -98,12 +98,12 @@ shortestFlagFmt fmt = case fmt of
 
 instance ParamSpec FlagParam where
   getParser (FlagParam fmt key parse) = Parser rawparse where
-    rawparse (pos, flags) = case args of
-      Just [] -> (Right $ parse True, (pos, rest))
-      Just _  -> (Left "unexpected parameter(s)", (pos, rest))
-      Nothing -> (Right $ parse False, (pos, rest))
+    rawparse (pos, flags) = case margs of
+      Just []   -> (Right $ parse True,  (pos, rest))
+      Just args' -> (Right $ parse True,  (pos ++ args', rest))
+      Nothing   -> (Right $ parse False, (pos, rest))
      where
-      (args, rest) = takeValidFlag fmt key flags
+      (margs, rest) = takeValidFlag fmt key flags
   getParamDescr (FlagParam fmt key _) = [ParamDescr
     (const $ "[" ++ shortestFlagFmt fmt key ++ "]")
     "optional arguments"
