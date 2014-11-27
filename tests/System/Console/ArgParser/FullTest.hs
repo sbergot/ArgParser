@@ -29,14 +29,10 @@ testparse :: [String] -> ParseResult MyTest
 testparse args = parseArgs args myTestApp
 
 checkParse :: [String] -> MyTest -> H.Assertion
-checkParse args expected = case testparse args of
-    (Right result) -> assertEqual expected result
-    (Left msg) -> assertFailure $ "parse failed with: " ++ msg
+checkParse args expected = behavior testparse [(willSucceed expected, args)]
 
 expectFail :: [String] -> H.Assertion
-expectFail args = case testparse args of
-    Right _ -> assertFailure "expected failure"
-    _ -> return ()
+expectFail args = behavior testparse [(willFail, args)]
 
 test_base :: H.Assertion
 test_base = checkParse
@@ -50,3 +46,6 @@ test_pos_after_flag = checkParse
 
 test_unknown_flag :: H.Assertion
 test_unknown_flag = expectFail ["--unknown", "1", "2", "3"]
+
+test_help_with_pos :: H.Assertion
+test_help_with_pos = expectFail ["--help", "1", "2", "3"]
