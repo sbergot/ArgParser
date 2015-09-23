@@ -46,7 +46,7 @@ module System.Console.ArgParser.QuickParams (
   -- ** Positionnal
   , posArgs
   -- ** RawRead class
-  , RawRead
+  , RawRead(rawParse)
   ) where
 
 import           Data.Either                       (partitionEithers)
