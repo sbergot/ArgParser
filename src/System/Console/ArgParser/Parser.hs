@@ -18,7 +18,6 @@ module System.Console.ArgParser.Parser
   , subParser
   ) where
 
-import           Control.Applicative
 import           System.Console.ArgParser.BaseType
 
 -- | interface allowing to define a basic block of a command line parser

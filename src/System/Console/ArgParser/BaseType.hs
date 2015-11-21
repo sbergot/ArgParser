@@ -12,7 +12,6 @@ Base types shared by several EasyConsole modules.
 
 module System.Console.ArgParser.BaseType where
 
-import           Control.Applicative     ((<*>), Applicative, pure)
 import qualified Data.Map as M (Map, empty)
 
 -- | Simple command line arg
