@@ -20,7 +20,6 @@ module System.Console.ArgParser.Format (
   , defaultFormat
   ) where
 
-import           Control.Applicative
 import           Data.Char                         (isSpace)
 import           Data.List                         (intercalate, unfoldr)
 import qualified Data.Map                          as M

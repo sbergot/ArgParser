@@ -51,7 +51,6 @@ module System.Console.ArgParser.QuickParams (
 
 import           Data.Either                       (partitionEithers)
 import           Data.List                       (unfoldr)
-import           Control.Applicative
 import           System.Console.ArgParser.BaseType
 import           System.Console.ArgParser.Params
 
