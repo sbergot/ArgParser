@@ -22,6 +22,7 @@ module System.Console.ArgParser.Run (
   , defaultSpecialFlags
   , setAppDescr
   , setAppEpilog
+  , setAppVersion
   , setAppName
   ) where
 
@@ -131,6 +132,15 @@ setAppDescr app descr = app {getAppDescr = Just descr }
 setAppEpilog :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppEpilog app descr = app {getAppEpilog = Just descr }
 
+-- | Set the version of an interface
+setAppVersion :: CmdLnInterface a -> String -> CmdLnInterface a
+setAppVersion app ver = app {getAppVersion = Just ver }
+
 -- | Set the name of an interface
 setAppName :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppName app descr = app {getAppName = descr }
+
+-- | Flipped setters (useful to apply using fmap)
+setDescr = flip setAppDescr
+setEpilog = flip setAppEpilog
+setVersin = flip setAppVersion
