@@ -27,7 +27,6 @@ module System.Console.ArgParser.Run (
   , setDescr
   , setVersion
   , setEpilog
-  , setName
   ) where
 
 import           Control.Monad
@@ -153,6 +152,3 @@ setEpilog = flip setAppEpilog
 
 setVersion :: String -> CmdLnInterface a -> CmdLnInterface a
 setVersion = flip setAppVersion
-
-setName :: String -> CmdLnInterface a -> CmdLnInterface a
-setName = flip setAppName
