@@ -24,6 +24,10 @@ module System.Console.ArgParser.Run (
   , setAppEpilog
   , setAppVersion
   , setAppName
+  , setDescr
+  , setVersion
+  , setEpilog
+  , setName
   ) where
 
 import           Control.Monad
@@ -141,6 +145,14 @@ setAppName :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppName app descr = app {getAppName = descr }
 
 -- | Flipped setters (useful to apply using fmap)
+setDescr :: String -> CmdLnInterface a -> CmdLnInterface a
 setDescr = flip setAppDescr
+
+setEpilog :: String -> CmdLnInterface a -> CmdLnInterface a
 setEpilog = flip setAppEpilog
-setVersin = flip setAppVersion
+
+setVersion :: String -> CmdLnInterface a -> CmdLnInterface a
+setVersion = flip setAppVersion
+
+setName :: String -> CmdLnInterface a -> CmdLnInterface a
+setName = flip setAppName
