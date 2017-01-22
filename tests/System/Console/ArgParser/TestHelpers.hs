@@ -58,6 +58,15 @@ getIntSuccessProp
 getIntSuccessProp parser repr = prop where
   prop (Positive i) = (Right i ==) $ parser $ repr i
 
+getMaybeIntSuccessProp
+  :: (Eq a)
+  => ([String] -> ParseResult (Maybe a))
+  -> (a -> [String])
+  -> Positive a
+  -> Bool
+getMaybeIntSuccessProp parser repr = prop where
+  prop (Positive i) = (Right (Just i) ==) $ parser $ repr i
+
 getStrSuccessProp
   :: ([String] -> ParseResult String)
   -> String
