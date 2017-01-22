@@ -80,6 +80,19 @@ test_optFlagFailure = behavior intOptFlagParser
   , (willSucceed 0, [])
   ]
 
+maybeIntOptFlagParser :: [String] -> ParseResult (Maybe Int)
+maybeIntOptFlagParser = paramRun $ optFlag Nothing "test"
+
+prop_maybeOptFlagSuccess :: Positive Int -> Bool
+prop_maybeOptFlagSuccess = getMaybeIntSuccessProp maybeIntOptFlagParser (\i -> ["-t", show i])
+
+test_maybeOptFlagFailure :: H.Assertion
+test_maybeOptFlagFailure = behavior maybeIntOptFlagParser
+  [ (willFail, ["--test"])
+  , (willFail, ["--test", "foo"])
+  , (willSucceed Nothing, [])
+  , (willSucceed (Just 1), ["--test", "1"])]
+
 intOptArgsParser :: [String] -> ParseResult Int
 intOptArgsParser = paramRun $ posArgs "test" 0 (+)
 
