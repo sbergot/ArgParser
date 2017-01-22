@@ -79,6 +79,11 @@ instance RawRead Char where
 instance RawRead a => RawRead [a] where
   rawParse s = Just (unfoldr rawParse s, [])
 
+instance RawRead a => RawRead (Maybe a) where
+  rawParse s = case rawParse s of
+    Nothing -> Nothing
+    Just (p, s') -> Just (Just p, s')
+
 instance RawRead Float where
   rawParse = defaultRawParse
 
