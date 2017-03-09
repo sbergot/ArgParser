@@ -53,6 +53,10 @@ runApp
 runApp appspec appfun = do
   args <- getArgs
   either putStrLn appfun $ parseArgs args appspec
+    where printError err = do
+            putStrLn err
+            putStrLn (showCmdLineAppUsage defaultFormat appspec)
+
 
 -- | Runs an apllication with the user provided arguments.
 --   It is a shorter way of calling `mkApp` and `runApp`
