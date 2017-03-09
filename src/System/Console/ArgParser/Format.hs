@@ -36,7 +36,7 @@ data CmdLineFormat = CmdLineFormat
 
 -- | Default specification for the help layout
 defaultFormat :: CmdLineFormat
-defaultFormat = CmdLineFormat 75 1 80
+defaultFormat = CmdLineFormat 45 1 50
 
 -- | Prints the application name and version
 showCmdLineVersion :: CmdLnInterface a -> String
