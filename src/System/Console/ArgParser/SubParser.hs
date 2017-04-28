@@ -56,7 +56,7 @@ mkSpecialFlag topname subapps = (parser, action) where
 data EmptyParam a = EmptyParam
 
 instance ParamSpec EmptyParam where
-  getParser _ = Parser $ \args -> (Left "command not found", args)
+  getParser _ = Parser $ \args -> (Left "subcommand not provided", args)
   getParamDescr _ = []
 
 data CommandParam appT resT = CommandParam 

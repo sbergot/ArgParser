@@ -62,6 +62,10 @@ module System.Console.ArgParser (
   , Descr (Descr)
   , setAppDescr
   , setAppEpilog
+  , setAppVersion
+  , setDescr
+  , setVersion
+  , setEpilog
   -- ** Sub commands
   -- $subparser
   , mkSubParser
@@ -96,7 +100,11 @@ import           System.Console.ArgParser.QuickParams
 import           System.Console.ArgParser.Run         (mkApp, mkDefaultApp,
                                                        parseArgs, runApp,
                                                        setAppDescr,
-                                                       setAppEpilog,
+                                                       setAppEpilog, 
+                                                       setAppVersion,
+                                                       setDescr,
+                                                       setEpilog,
+                                                       setVersion,
                                                        withParseResult)
 import           System.Console.ArgParser.SubParser   (mkSubParser)
 

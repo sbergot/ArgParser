@@ -22,7 +22,11 @@ module System.Console.ArgParser.Run (
   , defaultSpecialFlags
   , setAppDescr
   , setAppEpilog
+  , setAppVersion
   , setAppName
+  , setDescr
+  , setVersion
+  , setEpilog
   ) where
 
 import           Control.Monad
@@ -49,6 +53,7 @@ runApp
 runApp appspec appfun = do
   args <- getArgs
   either putStrLn appfun $ parseArgs args appspec
+
 
 -- | Runs an apllication with the user provided arguments.
 --   It is a shorter way of calling `mkApp` and `runApp`
@@ -131,6 +136,20 @@ setAppDescr app descr = app {getAppDescr = Just descr }
 setAppEpilog :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppEpilog app descr = app {getAppEpilog = Just descr }
 
+-- | Set the version of an interface
+setAppVersion :: CmdLnInterface a -> String -> CmdLnInterface a
+setAppVersion app ver = app {getAppVersion = Just ver }
+
 -- | Set the name of an interface
 setAppName :: CmdLnInterface a -> String -> CmdLnInterface a
 setAppName app descr = app {getAppName = descr }
+
+-- | Flipped setters (useful to apply using fmap)
+setDescr :: String -> CmdLnInterface a -> CmdLnInterface a
+setDescr = flip setAppDescr
+
+setEpilog :: String -> CmdLnInterface a -> CmdLnInterface a
+setEpilog = flip setAppEpilog
+
+setVersion :: String -> CmdLnInterface a -> CmdLnInterface a
+setVersion = flip setAppVersion
