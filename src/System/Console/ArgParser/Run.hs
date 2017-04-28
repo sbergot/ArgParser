@@ -52,10 +52,7 @@ runApp
   -> IO ()
 runApp appspec appfun = do
   args <- getArgs
-  either printError appfun $ parseArgs args appspec
-    where printError err = do
-            putStrLn err
-            putStrLn (showCmdLineAppUsage defaultFormat appspec)
+  either putStrLn appfun $ parseArgs args appspec
 
 
 -- | Runs an apllication with the user provided arguments.
